@@ -1,10 +1,12 @@
 # 🧠 Universal Turing Machine Simulator
 
-> Educational simulator for single-tape Turing machines with text and binary machine definitions.
+> Educational desktop simulator for exploring how simple transition rules, machine states, and tape operations can express general computation.
 
 ## 🎯 Overview
 
 UTMS is a desktop study project for loading, running, inspecting, and exporting Turing machine programs.
+
+A Turing machine is a formal model of computation consisting of states, an input/output tape, a tape head, and transition rules. Despite its simplicity, it is computationally equivalent to modern general-purpose programming languages in terms of what can be computed.
 
 The current implementation focuses on a deterministic single-tape simulator. It supports a readable text format (`.tm`) and a binary encoded format (`.btm`) for machine definitions. The codebase is intentionally split into a reusable simulation core, a WinForms user interface, and xUnit tests for the non-UI logic.
 
@@ -21,11 +23,11 @@ Current functionality:
 - binary encoded machine definition format (`.btm`)
 - input alphabet and tape alphabet declarations in `.tm` files
 - custom blank symbols loaded from machine definitions
-- `.btm` v2 format preserving alphabet metadata
+- `.btm` format preserving alphabet metadata
 - demo machines for common binary operations
 - xUnit tests covering core logic, parsers, serializers, and demos
 
-## 🧪 Demo Machines
+## 🧩 Demo Machines
 
 Demo files are stored in `demos/`.
 
@@ -82,7 +84,7 @@ Supported head moves:
 
 ## 🔢 Binary Machine Format
 
-The `.btm` format stores an encoded machine definition. The current binary format starts with the version prefix `1111` and stores input alphabet, tape alphabet, blank symbol, transitions, and input data.
+The `.btm` format stores an encoded machine definition with input alphabet, tape alphabet, blank symbol, transitions, and input data.
 
 When a `.tm` file is exported to `.btm`, user-defined state names are encoded by position and are restored as canonical names such as `q0`, `q1`, and `qF` after loading. This is intentional: the binary format is primarily a formal encoded representation, while `.tm` remains the user-friendly editable format.
 
@@ -146,7 +148,7 @@ dotnet run --project UTMS.WinForms\UTMS.WinForms.csproj
 
 The application can also be opened and run directly from Visual Studio using `UTMS.sln`.
 
-## ✅ Testing
+## 🧪 Testing
 
 Run all tests:
 
@@ -185,7 +187,7 @@ Planned direction:
 - optional transition graph export, for example to DOT/Graphviz or PNG
 - visual redesign of the WinForms interface
 
-## 📌 Status
+## Status
 
 Current status:
 
@@ -195,6 +197,6 @@ Current status:
 - ✅ demo programs are available in both supported formats
 - ✅ build and test suite currently pass on .NET 10
 
-## 📄 License
+## License
 
 Educational project intended for study and demonstration purposes.
