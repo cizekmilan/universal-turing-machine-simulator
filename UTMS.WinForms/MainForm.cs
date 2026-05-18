@@ -205,7 +205,7 @@ namespace TuringMachineSimulator
                     }
                     else if (ch == '1')
                         solidbr.Color = Color.Black;
-                    else if (ch != Tape.BlankSymbol)
+                    else if (ch != machine.BlankSymbol)
                         solidbr.Color = Color.Blue;
                     else
                         solidbr.Color = Color.White;

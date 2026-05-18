@@ -190,12 +190,7 @@ namespace TuringMachineSimulator
 
         private static TuringMachineDefinition CreateDefinition(List<char> parsedAlphabet, List<char> parsedTapeAlphabet, char? parsedBlankSymbol, string inputData, List<TransitionFunction> transitions, ref string errorMessage)
         {
-            char blankSymbol = parsedBlankSymbol.HasValue ? parsedBlankSymbol.Value : Tape.BlankSymbol;
-            if (blankSymbol != Tape.BlankSymbol)
-            {
-                errorMessage = "Aktualni simulator zatim podporuje pouze blank symbol \"" + Tape.BlankSymbol + "\".";
-                return null;
-            }
+            char blankSymbol = parsedBlankSymbol.HasValue ? parsedBlankSymbol.Value : Tape.DefaultBlankSymbol;
 
             List<char> inputAlphabet = parsedAlphabet ?? new List<char>(new char[] { '0', '1' });
             List<char> fullTapeAlphabet = parsedTapeAlphabet ?? InferTapeAlphabet(inputAlphabet, blankSymbol, transitions);

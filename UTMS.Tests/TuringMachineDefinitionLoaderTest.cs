@@ -38,6 +38,31 @@ namespace UTMS.Test
         }
 
         [Fact]
+        public void Load_AcceptsCustomBlankSymbolFromTextFile()
+        {
+            string path = WriteTempFile(
+                "alphabet = {0,1}",
+                "tapeAlphabet = {0,1,_}",
+                "blank = _",
+                "(q0, _) = (qF, 1, S)");
+
+            try
+            {
+                string errorMessage;
+                TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(path, out errorMessage);
+
+                Assert.NotNull(definition);
+                Assert.Equal("", errorMessage);
+                Assert.Equal('_', definition.BlankSymbol);
+                Assert.Contains('_', definition.TapeAlphabet);
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Fact]
         public void Load_ReturnsNullAndErrorForInvalidFile()
         {
             string path = WriteTempFile(

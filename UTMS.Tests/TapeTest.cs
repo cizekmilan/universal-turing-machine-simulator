@@ -34,6 +34,20 @@ namespace UTMS.Test
         }
 
         [Fact]
+        public void Constructor_UsesConfiguredBlankSymbol()
+        {
+            Tape tape = new Tape('_');
+
+            Assert.Equal('_', tape.BlankSymbol);
+            Assert.All(tape.Cells, symbol => Assert.Equal('_', symbol));
+
+            tape.SetData("1");
+
+            Assert.Equal('1', tape.Cells[10]);
+            Assert.Equal('_', tape.Cells[11]);
+        }
+
+        [Fact]
         public void SetData_ClearsPreviousTapeContents()
         {
             Tape tape = new Tape();

@@ -18,27 +18,39 @@ namespace TuringMachineSimulator
         private bool hasOverflowed;
 
         /// <summary>
-        /// Symbol prázdného políčka pásky.
-        /// </summary>
-        public static char BlankSymbol { get; private set; }
-
-        static Tape()
-        {
-            BlankSymbol = Properties.Settings.Default.BlankSymbol;
-        }
-
-        /// <summary>
         /// Vytvoří prázdnou pásku s hlavou na výchozí pozici.
         /// </summary>
         public Tape()
+            : this(Properties.Settings.Default.BlankSymbol)
+        {
+        }
+
+        /// <summary>
+        /// Vytvoří prázdnou pásku s určeným prázdným symbolem.
+        /// </summary>
+        public Tape(char blankSymbol)
         {
             TapeLength = Properties.Settings.Default.TapeLength;
+            BlankSymbol = blankSymbol;
             cells = new List<char>(TapeLength + 10);
             for (int i = 0; i < TapeLength; i++)
                 cells.Add(BlankSymbol);
 
             Reset();
         }
+
+        /// <summary>
+        /// Výchozí prázdný symbol používaný při ručním vytvoření pásky.
+        /// </summary>
+        public static char DefaultBlankSymbol
+        {
+            get { return Properties.Settings.Default.BlankSymbol; }
+        }
+
+        /// <summary>
+        /// Symbol prázdného políčka této pásky.
+        /// </summary>
+        public char BlankSymbol { get; private set; }
 
         /// <summary>
         /// Aktuální obsah pásky.
@@ -205,6 +217,15 @@ namespace TuringMachineSimulator
         /// Vytvoří stroj ve výchozím počátečním stavu.
         /// </summary>
         public TuringMachine()
+            : this(Tape.DefaultBlankSymbol)
+        {
+        }
+
+        /// <summary>
+        /// Vytvoří stroj s určeným prázdným symbolem pásky.
+        /// </summary>
+        public TuringMachine(char blankSymbol)
+            : base(blankSymbol)
         {
             currentState = TransitionFunction.InitialStateName;
         }

@@ -20,6 +20,7 @@ Current functionality:
 - text machine definition format (`.tm`)
 - binary encoded machine definition format (`.btm`)
 - input alphabet and tape alphabet declarations in `.tm` files
+- custom blank symbols loaded from machine definitions
 - `.btm` v2 format preserving alphabet metadata
 - demo machines for common binary operations
 - xUnit tests covering core logic, parsers, serializers, and demos
@@ -169,7 +170,6 @@ The test suite currently covers:
 Known limitations:
 
 - the simulator currently supports a single tape
-- the blank symbol is currently fixed to `#`
 - GUI editing of transition tables is not implemented yet
 - graph visualization/export is not implemented yet
 - `.btm` is useful as a formal encoded format, but `.tm` is the preferred human-editable format

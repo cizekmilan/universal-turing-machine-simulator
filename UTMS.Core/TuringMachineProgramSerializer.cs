@@ -31,7 +31,7 @@ namespace TuringMachineSimulator
         /// </summary>
         public static string ToText(IEnumerable<TransitionFunction> program, string inputData)
         {
-            return ToText(program, inputData, DefaultAlphabet, DefaultTapeAlphabet, Tape.BlankSymbol);
+            return ToText(program, inputData, DefaultAlphabet, DefaultTapeAlphabet, Tape.DefaultBlankSymbol);
         }
 
         /// <summary>
@@ -121,8 +121,8 @@ namespace TuringMachineSimulator
 
             List<TransitionFunction> transitions = new List<TransitionFunction>(program);
             List<char> alphabet = BuildAlphabet(inputData);
-            List<char> tapeAlphabet = BuildTapeAlphabet(transitions, alphabet, Tape.BlankSymbol);
-            return ToBinary(transitions, inputData, alphabet, tapeAlphabet, Tape.BlankSymbol);
+            List<char> tapeAlphabet = BuildTapeAlphabet(transitions, alphabet, Tape.DefaultBlankSymbol);
+            return ToBinary(transitions, inputData, alphabet, tapeAlphabet, Tape.DefaultBlankSymbol);
         }
 
         /// <summary>

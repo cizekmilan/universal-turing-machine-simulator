@@ -241,14 +241,6 @@ namespace TuringMachineSimulator
                 return false;
             }
 
-            if (definition.BlankSymbol != Tape.BlankSymbol)
-            {
-                errorMessage = "Aktualni simulator zatim podporuje pouze blank symbol \"" + Tape.BlankSymbol + "\".";
-                LastError = errorMessage;
-                TapeChanged?.Invoke(this, EventArgs.Empty);
-                return false;
-            }
-
             return LoadProgramCore(definition, out errorMessage);
         }
 
@@ -261,6 +253,7 @@ namespace TuringMachineSimulator
 
         private bool LoadProgramCore(TuringMachineDefinition definition, out string errorMessage)
         {
+            machine = new TuringMachine(definition.BlankSymbol);
             program.LoadDefinition(definition);
             machine.SetData(definition.InputData);
             errorMessage = "";

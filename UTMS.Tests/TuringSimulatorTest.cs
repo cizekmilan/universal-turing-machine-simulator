@@ -139,6 +139,29 @@ namespace UTMS.Test
         }
 
         [Fact]
+        public void LoadProgram_UsesDefinitionBlankSymbol()
+        {
+            TuringMachineDefinition definition = new TuringMachineDefinition(
+                new char[] { '0', '1' },
+                new char[] { '0', '1', '_' },
+                '_',
+                "",
+                new TransitionFunction[] { new TransitionFunction("q0", '_', "qF", '1', 'S') });
+            TuringSimulator simulator = new TuringSimulator();
+
+            string errorMessage;
+            Assert.True(simulator.LoadProgram(definition, out errorMessage), errorMessage);
+
+            SimulationStep step = simulator.Step();
+
+            Assert.NotNull(step);
+            Assert.Equal('_', simulator.Machine.BlankSymbol);
+            Assert.Equal('_', step.InputSymbol);
+            Assert.Equal('1', simulator.Machine.ReadSymbol());
+            Assert.Equal("qF", simulator.Machine.CurrentState());
+        }
+
+        [Fact]
         public void Run_ReturnsUnknownStateSummaryWhenTransitionIsMissing()
         {
             string path = WriteTempFile("(q1, #) = (qF, 1, S)");
