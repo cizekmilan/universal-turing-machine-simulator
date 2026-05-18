@@ -1,4 +1,6 @@
-﻿using TuringMachineSimulator;
+using System;
+using System.IO;
+using TuringMachineSimulator;
 using Xunit;
 
 namespace UTMS.Test
@@ -8,13 +10,12 @@ namespace UTMS.Test
     /// </summary>
     public class BinaryCodeTest
     {
-        private const string ValidIncrementProgram = "1110100101001001101010101001101000100100010110010100010010110010010000101011000100100010010110001010001010110001000100000100010011000010010000101011000010100010010110000100010000010010001111011";
-
         [Fact]
         public void MakeTextInstructions_DecodesValidBinaryProgram()
         {
             string errorMessage = "";
-            BinaryCode code = new BinaryCode(ValidIncrementProgram);
+            string validIncrementProgram = File.ReadAllText(Path.Combine(GetWorkspaceRoot(), "demos", "bin_increment.btm")).Trim();
+            BinaryCode code = new BinaryCode(validIncrementProgram);
 
             var instructions = code.MakeTextInstructions(ref errorMessage);
 
@@ -42,12 +43,11 @@ namespace UTMS.Test
         }
 
         [Theory]
-        [InlineData("11101001010010011010101010110000000011101000100100010110010100010010110010010000101011000100100100101100010100010101100010001000001000100110000100100001010110000100100010010110000100010000010010001111011")]
-        [InlineData("11101001010010011010101010011010001001000101100101000100101100100100001010110001001001001011000101000101011000100010000010001001100001001000010101100001001000101010110000100010000010010001111011")]
-        [InlineData("1110100000101001001101010101001101000100100010110010100010010110010010000101011000100100100101100010100010101100010001000001000100110000100100001010110000100100010010110000100010000010010001111011")]
-        [InlineData("111010010100100110101010100110100010010001O110010100010010110010010000101011000100100100101100010100010101100010001000001000100110000100100001010110000100100010010110000100010000010010001111011")]
-        [InlineData("01010111")]
         [InlineData("11101010")]
+        [InlineData("11110100101001001101010101001101000100100010110010100010010110010010000101011000100100100101100010100010101100010001000001000100110000100100001010110000100100010010110000100010000010010001111011")]
+        [InlineData("1111010010100100110101010100110100010010001O110010100010010110010010000101011000100100100101100010100010101100010001000001000100110000100100001010110000100100010010110000100010000010010001111011")]
+        [InlineData("01010111")]
+        [InlineData("1111")]
         public void MakeTextInstructions_RejectsInvalidBinaryProgram(string invalidProgram)
         {
             string errorMessage = "";
@@ -65,6 +65,20 @@ namespace UTMS.Test
 
             Assert.Null(code.MakeTextInstructions(ref errorMessage));
             Assert.NotEqual("", errorMessage);
+        }
+
+        private static string GetWorkspaceRoot()
+        {
+            DirectoryInfo directory = new DirectoryInfo(AppContext.BaseDirectory);
+            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "UTMS.sln")))
+            {
+                directory = directory.Parent;
+            }
+
+            if (directory == null)
+                throw new DirectoryNotFoundException("Nepodařilo se najít kořen projektu.");
+
+            return directory.FullName;
         }
     }
 }

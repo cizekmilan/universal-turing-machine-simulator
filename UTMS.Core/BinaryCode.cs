@@ -8,7 +8,6 @@ namespace TuringMachineSimulator
     /// </summary>
     public class BinaryCode
     {
-        private static readonly char[] LegacyTapeAlphabet = new char[] { '0', '1', '#' };
         private readonly string binaryCode;
         private List<char> alphabet;
         private List<char> tapeAlphabet;
@@ -24,7 +23,7 @@ namespace TuringMachineSimulator
 
             this.binaryCode = binaryCode.Trim();
             alphabet = new List<char>(new char[] { '0', '1' });
-            tapeAlphabet = new List<char>(LegacyTapeAlphabet);
+            tapeAlphabet = new List<char>(new char[] { '0', '1', Properties.Settings.Default.BlankSymbol });
             blankSymbol = Properties.Settings.Default.BlankSymbol;
             InputData = "";
         }
@@ -63,14 +62,6 @@ namespace TuringMachineSimulator
         /// </summary>
         public List<TransitionFunction> MakeTextInstructions(ref string errorMessage)
         {
-            if (binaryCode.StartsWith("1111"))
-                return MakeVersion2Instructions(ref errorMessage);
-
-            return MakeLegacyInstructions(ref errorMessage);
-        }
-
-        private List<TransitionFunction> MakeVersion2Instructions(ref string errorMessage)
-        {
             string instructionBlock;
             if (!ParseVersion2Code(ref errorMessage, out instructionBlock))
                 return null;
@@ -88,6 +79,12 @@ namespace TuringMachineSimulator
             instructionBlock = "";
             if (!ValidateBinaryAlphabet(ref errorMessage))
                 return false;
+
+            if (!binaryCode.StartsWith("1111"))
+            {
+                errorMessage = "Binarni kod musi zacinat prefixem verze 2: 1111.";
+                return false;
+            }
 
             string withoutPrefix = binaryCode.Substring(4);
             int metadataEnd = withoutPrefix.IndexOf("1111", StringComparison.Ordinal);
@@ -133,45 +130,6 @@ namespace TuringMachineSimulator
             string inputBlock = machineBlock.Substring(instructionEnd + 3);
             InputData = DecodeInputData(inputBlock, ref errorMessage);
             return InputData != null;
-        }
-
-        private List<TransitionFunction> MakeLegacyInstructions(ref string errorMessage)
-        {
-            string instructionBlock;
-            if (!ParseLegacyCode(ref errorMessage, out instructionBlock))
-                return null;
-
-            List<TransitionFunction> transitions = DecodeInstructionBlock(instructionBlock, new List<char>(LegacyTapeAlphabet), ref errorMessage);
-            if (transitions == null)
-                return null;
-
-            DecodeStateNames(transitions);
-            return transitions;
-        }
-
-        private bool ParseLegacyCode(ref string errorMessage, out string instructionBlock)
-        {
-            instructionBlock = "";
-            if (!ValidateBinaryAlphabet(ref errorMessage))
-                return false;
-
-            if (!binaryCode.StartsWith("111"))
-            {
-                errorMessage = "Binarni kod musi zacinat na 111.";
-                return false;
-            }
-
-            string withoutPrefix = binaryCode.Substring(3);
-            int instructionEnd = withoutPrefix.IndexOf("111", StringComparison.Ordinal);
-            if (instructionEnd <= 0)
-            {
-                errorMessage = "Binarni kod musi ke konci obsahovat sekvenci 111.";
-                return false;
-            }
-
-            instructionBlock = withoutPrefix.Substring(0, instructionEnd);
-            InputData = withoutPrefix.EndsWith("111") ? "" : withoutPrefix.Substring(instructionEnd + 3);
-            return true;
         }
 
         private List<TransitionFunction> DecodeInstructionBlock(string instructionBlock, IList<char> symbols, ref string errorMessage)

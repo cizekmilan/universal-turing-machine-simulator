@@ -77,28 +77,6 @@ namespace UTMS.Test
         }
 
         [Fact]
-        public void Load_ReturnsDefinitionFromLegacyBinaryFile()
-        {
-            string binaryProgram = "1110100101001001101010101001101000100100010110010100010010110010010000101011000100100010010110001010001010110001000100000100010011000010010000101011000010100010010110000100010000010010001111011";
-            string path = WriteTempFile(binaryProgram);
-
-            try
-            {
-                string errorMessage;
-                TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(path, out errorMessage);
-
-                Assert.NotNull(definition);
-                Assert.Equal("", errorMessage);
-                Assert.Equal(11, definition.Transitions.Count);
-                Assert.Equal("1011", definition.InputData);
-            }
-            finally
-            {
-                File.Delete(path);
-            }
-        }
-
-        [Fact]
         public void Load_ReturnsErrorForEmptyProgram()
         {
             string path = WriteTempFile("// comment only", "");
