@@ -1195,7 +1195,7 @@ namespace UTMS.WinForms
                 return true;
 
             DialogResult result = MessageBox.Show(
-                "Current machine has unsaved changes. Do you want to save them?",
+                "Current machine has unsaved changes.\nDo you want to save them?",
                 "Unsaved changes",
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question);
@@ -1260,9 +1260,11 @@ namespace UTMS.WinForms
         /// </summary>
         private void UpdateWindowTitle()
         {
-            string title = "UTMS";
+            string title = "UTMS - Universal Turing Machine Simulator";
             if (!string.IsNullOrWhiteSpace(currentProgramFileName))
-                title += " - " + Path.GetFileName(currentProgramFileName);
+                title = "UTMS - " + Path.GetFileName(currentProgramFileName);
+            else if (hasUnsavedChanges)
+                title = "UTMS - New machine";
 
             if (hasUnsavedChanges)
                 title += " *";

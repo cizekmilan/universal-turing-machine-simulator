@@ -102,8 +102,9 @@
             txtSummary.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtSummary.Name = "txtSummary";
             txtSummary.ReadOnly = true;
-            txtSummary.Size = new System.Drawing.Size(812, 103);
-            txtSummary.TabIndex = 2;
+            txtSummary.Size = new System.Drawing.Size(826, 103);
+            txtSummary.TabIndex = 9;
+            txtSummary.TabStop = false;
             txtSummary.Text = "";
             // 
             // lblTape
@@ -123,7 +124,8 @@
             txtProgramFile.Name = "txtProgramFile";
             txtProgramFile.ReadOnly = true;
             txtProgramFile.Size = new System.Drawing.Size(298, 23);
-            txtProgramFile.TabIndex = 4;
+            txtProgramFile.TabIndex = 8;
+            txtProgramFile.TabStop = false;
             // 
             // lblProgramFile
             // 
@@ -142,7 +144,8 @@
             txtInputAlphabet.Name = "txtInputAlphabet";
             txtInputAlphabet.ReadOnly = true;
             txtInputAlphabet.Size = new System.Drawing.Size(100, 23);
-            txtInputAlphabet.TabIndex = 21;
+            txtInputAlphabet.TabIndex = 3;
+            txtInputAlphabet.TabStop = false;
             // 
             // lblInputAlphabet
             // 
@@ -161,7 +164,8 @@
             txtTapeAlphabet.Name = "txtTapeAlphabet";
             txtTapeAlphabet.ReadOnly = true;
             txtTapeAlphabet.Size = new System.Drawing.Size(137, 23);
-            txtTapeAlphabet.TabIndex = 23;
+            txtTapeAlphabet.TabIndex = 4;
+            txtTapeAlphabet.TabStop = false;
             // 
             // lblTapeAlphabet
             // 
@@ -180,7 +184,7 @@
             txtBlankSymbol.MaxLength = 1;
             txtBlankSymbol.Name = "txtBlankSymbol";
             txtBlankSymbol.Size = new System.Drawing.Size(46, 23);
-            txtBlankSymbol.TabIndex = 25;
+            txtBlankSymbol.TabIndex = 0;
             txtBlankSymbol.TextChanged += MachineDefinitionField_TextChanged;
             // 
             // lblBlankSymbol
@@ -209,7 +213,7 @@
             grpMachineDefinition.Name = "grpMachineDefinition";
             grpMachineDefinition.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             grpMachineDefinition.Size = new System.Drawing.Size(453, 147);
-            grpMachineDefinition.TabIndex = 27;
+            grpMachineDefinition.TabIndex = 1;
             grpMachineDefinition.TabStop = false;
             grpMachineDefinition.Text = "Machine definition";
             // 
@@ -219,7 +223,7 @@
             txtInputData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtInputData.Name = "txtInputData";
             txtInputData.Size = new System.Drawing.Size(346, 23);
-            txtInputData.TabIndex = 7;
+            txtInputData.TabIndex = 1;
             txtInputData.TextChanged += MachineDefinitionField_TextChanged;
             // 
             // lblInputData
@@ -239,7 +243,7 @@
             btnSetInputData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnSetInputData.Name = "btnSetInputData";
             btnSetInputData.Size = new System.Drawing.Size(88, 24);
-            btnSetInputData.TabIndex = 18;
+            btnSetInputData.TabIndex = 2;
             btnSetInputData.Text = "Set";
             btnSetInputData.UseVisualStyleBackColor = true;
             btnSetInputData.Click += btnSetInputData_Click;
@@ -252,7 +256,7 @@
             btnRunMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnRunMachine.Name = "btnRunMachine";
             btnRunMachine.Size = new System.Drawing.Size(175, 45);
-            btnRunMachine.TabIndex = 6;
+            btnRunMachine.TabIndex = 2;
             btnRunMachine.Text = "Run Turing machine";
             btnRunMachine.UseVisualStyleBackColor = false;
             btnRunMachine.Click += btnRunMachine_Click;
@@ -271,7 +275,7 @@
             panelSimulationStatus.Location = new System.Drawing.Point(14, 340);
             panelSimulationStatus.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panelSimulationStatus.Name = "panelSimulationStatus";
-            panelSimulationStatus.Size = new System.Drawing.Size(813, 58);
+            panelSimulationStatus.Size = new System.Drawing.Size(826, 58);
             panelSimulationStatus.TabIndex = 29;
             // 
             // lblMachineStateStatus
@@ -357,7 +361,7 @@
             lblLastTransitionStatus.ForeColor = System.Drawing.Color.FromArgb(70, 78, 92);
             lblLastTransitionStatus.Location = new System.Drawing.Point(628, 14);
             lblLastTransitionStatus.Name = "lblLastTransitionStatus";
-            lblLastTransitionStatus.Size = new System.Drawing.Size(166, 30);
+            lblLastTransitionStatus.Size = new System.Drawing.Size(179, 30);
             lblLastTransitionStatus.TabIndex = 5;
             lblLastTransitionStatus.Text = "Ready";
             lblLastTransitionStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -366,10 +370,11 @@
             // 
             panelTapeCanvas.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             panelTapeCanvas.BackColor = System.Drawing.SystemColors.ControlLight;
-            panelTapeCanvas.Location = new System.Drawing.Point(14, 398);
+            panelTapeCanvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panelTapeCanvas.Location = new System.Drawing.Point(14, 397);
             panelTapeCanvas.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panelTapeCanvas.Name = "panelTapeCanvas";
-            panelTapeCanvas.Size = new System.Drawing.Size(813, 183);
+            panelTapeCanvas.Size = new System.Drawing.Size(826, 183);
             panelTapeCanvas.TabIndex = 9;
             panelTapeCanvas.Paint += panelTapeCanvas_Paint;
             panelTapeCanvas.MouseDown += panelTapeCanvas_MouseDown;
@@ -423,7 +428,7 @@
             trackSimulationDelay.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             trackSimulationDelay.Size = new System.Drawing.Size(173, 45);
             trackSimulationDelay.SmallChange = 1;
-            trackSimulationDelay.TabIndex = 13;
+            trackSimulationDelay.TabIndex = 0;
             trackSimulationDelay.TickFrequency = 1;
             trackSimulationDelay.Value = 4;
             trackSimulationDelay.ValueChanged += trackSimulationDelay_ValueChanged;
@@ -458,8 +463,8 @@
             listProgramTransitions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             listProgramTransitions.MultiSelect = false;
             listProgramTransitions.Name = "listProgramTransitions";
-            listProgramTransitions.Size = new System.Drawing.Size(359, 191);
-            listProgramTransitions.TabIndex = 17;
+            listProgramTransitions.Size = new System.Drawing.Size(359, 218);
+            listProgramTransitions.TabIndex = 6;
             listProgramTransitions.UseCompatibleStateImageBehavior = false;
             listProgramTransitions.View = System.Windows.Forms.View.Details;
             listProgramTransitions.ItemSelectionChanged += listProgramTransitions_ItemSelectionChanged;
@@ -498,7 +503,7 @@
             btnStepMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnStepMachine.Name = "btnStepMachine";
             btnStepMachine.Size = new System.Drawing.Size(92, 45);
-            btnStepMachine.TabIndex = 16;
+            btnStepMachine.TabIndex = 4;
             btnStepMachine.Text = "Step";
             btnStepMachine.UseVisualStyleBackColor = false;
             btnStepMachine.Click += btnStepMachine_Click;
@@ -511,7 +516,7 @@
             btnPauseMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnPauseMachine.Name = "btnPauseMachine";
             btnPauseMachine.Size = new System.Drawing.Size(92, 45);
-            btnPauseMachine.TabIndex = 28;
+            btnPauseMachine.TabIndex = 3;
             btnPauseMachine.Text = "Pause";
             btnPauseMachine.UseVisualStyleBackColor = false;
             btnPauseMachine.Click += btnPauseMachine_Click;
@@ -524,7 +529,7 @@
             btnResetMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnResetMachine.Name = "btnResetMachine";
             btnResetMachine.Size = new System.Drawing.Size(92, 45);
-            btnResetMachine.TabIndex = 19;
+            btnResetMachine.TabIndex = 5;
             btnResetMachine.Text = "Reset";
             btnResetMachine.UseVisualStyleBackColor = false;
             btnResetMachine.Click += btnResetMachine_Click;
@@ -682,7 +687,7 @@
             MinimizeBox = false;
             Name = "MainForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            Text = "UTMS";
+            Text = "UTMS - Universal Turing Machine Simulator";
             panelSimulationStatus.ResumeLayout(false);
             grpMachineDefinition.ResumeLayout(false);
             grpMachineDefinition.PerformLayout();

@@ -14,7 +14,7 @@ namespace UTMS.WinForms
     {
         private const int CellWidth = 46;
         private const int CellHeight = 46;
-        private const int TapeLeft = 18;
+        private const int TapeHorizontalPadding = 12;
         private const int EdgeSafetyCells = 1;
         private readonly Panel panel;
         private Bitmap bitmap;
@@ -72,13 +72,13 @@ namespace UTMS.WinForms
 
                 TuringMachine machine = simulator.Machine;
                 int tapeTop = Math.Max(44, (panel.Height - CellHeight) / 2);
-                int tapeWidth = Math.Max(CellWidth, panel.Width - 36);
+                int tapeWidth = GetTapeViewportWidth();
                 double visibleCells = Math.Max(1, (double)tapeWidth / CellWidth);
 
                 UpdateViewport(machine, visibleCells);
 
                 DrawTapeCells(surface, machine, tapeTop, tapeWidth);
-                DrawHeadMarker(surface, machine, tapeTop);
+                DrawHeadMarker(surface, machine, tapeTop, tapeWidth);
             }
         }
 
@@ -241,77 +241,101 @@ namespace UTMS.WinForms
         {
             int firstCell = Math.Max(0, (int)Math.Floor(scrollOffsetCells) - 1);
             int lastCell = Math.Min(machine.Cells.Count - 1, (int)Math.Ceiling(scrollOffsetCells + (double)tapeWidth / CellWidth) + 1);
+            Rectangle viewportBounds = new Rectangle(TapeHorizontalPadding, 0, tapeWidth, panel.Height);
+            GraphicsState clipState = surface.Save();
 
-            using (Font symbolFont = new Font("Consolas", 18, FontStyle.Bold))
-            using (Font indexFont = new Font("Segoe UI", 7, FontStyle.Regular))
-            using (Pen borderPen = new Pen(Color.FromArgb(208, 215, 222)))
-            using (Pen headPen = new Pen(Color.FromArgb(9, 105, 218), 2))
-            using (SolidBrush cellBrush = new SolidBrush(Color.White))
-            using (SolidBrush blankBrush = new SolidBrush(Color.FromArgb(246, 248, 250)))
-            using (SolidBrush activeBrush = new SolidBrush(Color.FromArgb(221, 244, 255)))
-            using (SolidBrush writeBrush = new SolidBrush(Color.FromArgb(255, 248, 197)))
-            using (SolidBrush symbolBrush = new SolidBrush(Color.FromArgb(31, 35, 40)))
-            using (SolidBrush blankTextBrush = new SolidBrush(Color.FromArgb(140, 149, 159)))
-            using (SolidBrush indexBrush = new SolidBrush(Color.FromArgb(110, 118, 129)))
-            using (StringFormat centered = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+            try
             {
-                Rectangle headBounds = Rectangle.Empty;
-                bool hasHeadBounds = false;
+                surface.SetClip(viewportBounds);
 
-                for (int index = firstCell; index <= lastCell; index++)
+                using (Font symbolFont = new Font("Consolas", 18, FontStyle.Bold))
+                using (Font indexFont = new Font("Segoe UI", 7, FontStyle.Regular))
+                using (Pen borderPen = new Pen(Color.FromArgb(208, 215, 222)))
+                using (Pen headPen = new Pen(Color.FromArgb(9, 105, 218), 2))
+                using (SolidBrush cellBrush = new SolidBrush(Color.White))
+                using (SolidBrush blankBrush = new SolidBrush(Color.FromArgb(246, 248, 250)))
+                using (SolidBrush activeBrush = new SolidBrush(Color.FromArgb(221, 244, 255)))
+                using (SolidBrush writeBrush = new SolidBrush(Color.FromArgb(255, 248, 197)))
+                using (SolidBrush symbolBrush = new SolidBrush(Color.FromArgb(31, 35, 40)))
+                using (SolidBrush blankTextBrush = new SolidBrush(Color.FromArgb(140, 149, 159)))
+                using (SolidBrush indexBrush = new SolidBrush(Color.FromArgb(110, 118, 129)))
+                using (StringFormat centered = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                 {
-                    int x = TapeLeft + (int)Math.Round((index - scrollOffsetCells) * CellWidth);
-                    Rectangle cellBounds = new Rectangle(x, tapeTop, CellWidth, CellHeight);
-                    bool isHead = index == machine.HeadIndex();
-                    bool isBlank = machine.Cells[index] == machine.BlankSymbol;
-                    bool isHighlightedWrite = index == highlightedCellIndex;
-                    char symbol = isHighlightedWrite && hasHighlightedSymbol ? highlightedSymbol : machine.Cells[index];
+                    Rectangle headBounds = Rectangle.Empty;
+                    bool hasHeadBounds = false;
 
-                    surface.FillRectangle(isHighlightedWrite ? writeBrush : isHead ? activeBrush : isBlank ? blankBrush : cellBrush, cellBounds);
-                    surface.DrawRectangle(borderPen, cellBounds);
-                    surface.DrawString(symbol.ToString(), symbolFont, isBlank && !isHighlightedWrite ? blankTextBrush : symbolBrush, cellBounds, centered);
-                    surface.DrawString(index.ToString(), indexFont, indexBrush, new Rectangle(x, tapeTop + CellHeight + 4, CellWidth, 14), centered);
-
-                    if (isHead)
+                    for (int index = firstCell; index <= lastCell; index++)
                     {
-                        headBounds = cellBounds;
-                        hasHeadBounds = true;
+                        int x = TapeHorizontalPadding + (int)Math.Round((index - scrollOffsetCells) * CellWidth);
+                        Rectangle cellBounds = new Rectangle(x, tapeTop, CellWidth, CellHeight);
+                        bool isHead = index == machine.HeadIndex();
+                        bool isBlank = machine.Cells[index] == machine.BlankSymbol;
+                        bool isHighlightedWrite = index == highlightedCellIndex;
+                        char symbol = isHighlightedWrite && hasHighlightedSymbol ? highlightedSymbol : machine.Cells[index];
+
+                        surface.FillRectangle(isHighlightedWrite ? writeBrush : isHead ? activeBrush : isBlank ? blankBrush : cellBrush, cellBounds);
+                        surface.DrawRectangle(borderPen, cellBounds);
+                        surface.DrawString(symbol.ToString(), symbolFont, isBlank && !isHighlightedWrite ? blankTextBrush : symbolBrush, cellBounds, centered);
+                        surface.DrawString(index.ToString(), indexFont, indexBrush, new Rectangle(x, tapeTop + CellHeight + 4, CellWidth, 14), centered);
+
+                        if (isHead)
+                        {
+                            headBounds = cellBounds;
+                            hasHeadBounds = true;
+                        }
+                    }
+
+                    if (hasHeadBounds)
+                    {
+                        Rectangle headBorderBounds = new Rectangle(headBounds.Left, headBounds.Top, headBounds.Width - 1, headBounds.Height - 1);
+                        surface.DrawRectangle(headPen, headBorderBounds);
                     }
                 }
-
-                if (hasHeadBounds)
-                {
-                    Rectangle headBorderBounds = new Rectangle(headBounds.Left, headBounds.Top, headBounds.Width - 1, headBounds.Height - 1);
-                    surface.DrawRectangle(headPen, headBorderBounds);
-                }
+            }
+            finally
+            {
+                surface.Restore(clipState);
             }
         }
 
         /// <summary>
         /// Zvýrazní pozici hlavy nad buňkou pásky.
         /// </summary>
-        private void DrawHeadMarker(Graphics surface, TuringMachine machine, int tapeTop)
+        private void DrawHeadMarker(Graphics surface, TuringMachine machine, int tapeTop, int tapeWidth)
         {
-            int headX = TapeLeft + (int)Math.Round((machine.HeadIndex() - scrollOffsetCells) * CellWidth);
-            if (headX + CellWidth < 0 || headX > panel.Width)
+            int headX = TapeHorizontalPadding + (int)Math.Round((machine.HeadIndex() - scrollOffsetCells) * CellWidth);
+            int tapeRight = TapeHorizontalPadding + tapeWidth;
+            if (headX + CellWidth < TapeHorizontalPadding || headX > tapeRight)
                 return;
 
-            using (Font stateFont = new Font("Segoe UI", 9, FontStyle.Bold))
-            using (SolidBrush markerBrush = new SolidBrush(Color.FromArgb(9, 105, 218)))
-            using (SolidBrush textBrush = new SolidBrush(Color.White))
-            using (StringFormat centered = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
-            {
-                Point[] triangle =
-                {
-                    new Point(headX + CellWidth / 2, tapeTop - 8),
-                    new Point(headX + CellWidth / 2 - 7, tapeTop - 20),
-                    new Point(headX + CellWidth / 2 + 7, tapeTop - 20)
-                };
-                surface.FillPolygon(markerBrush, triangle);
+            Rectangle viewportBounds = new Rectangle(TapeHorizontalPadding, 0, tapeWidth, panel.Height);
+            GraphicsState clipState = surface.Save();
 
-                Rectangle stateBounds = new Rectangle(headX - 20, tapeTop + CellHeight + 24, CellWidth + 40, 24);
-                surface.FillRectangle(markerBrush, stateBounds);
-                surface.DrawString(machine.CurrentState(), stateFont, textBrush, stateBounds, centered);
+            try
+            {
+                surface.SetClip(viewportBounds);
+
+                using (Font stateFont = new Font("Segoe UI", 9, FontStyle.Bold))
+                using (SolidBrush markerBrush = new SolidBrush(Color.FromArgb(9, 105, 218)))
+                using (SolidBrush textBrush = new SolidBrush(Color.White))
+                using (StringFormat centered = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
+                {
+                    Point[] triangle =
+                    {
+                        new Point(headX + CellWidth / 2, tapeTop - 8),
+                        new Point(headX + CellWidth / 2 - 7, tapeTop - 20),
+                        new Point(headX + CellWidth / 2 + 7, tapeTop - 20)
+                    };
+                    surface.FillPolygon(markerBrush, triangle);
+
+                    Rectangle stateBounds = new Rectangle(headX - 20, tapeTop + CellHeight + 24, CellWidth + 40, 24);
+                    surface.FillRectangle(markerBrush, stateBounds);
+                    surface.DrawString(machine.CurrentState(), stateFont, textBrush, stateBounds, centered);
+                }
+            }
+            finally
+            {
+                surface.Restore(clipState);
             }
         }
 
@@ -337,7 +361,7 @@ namespace UTMS.WinForms
         /// </summary>
         private double ClampOffset(TuringMachine machine, double offset)
         {
-            int tapeWidth = Math.Max(CellWidth, panel.Width - 36);
+            int tapeWidth = GetTapeViewportWidth();
             double visibleCells = Math.Max(1, (double)tapeWidth / CellWidth);
             double maxOffset = Math.Max(0, machine.Cells.Count - visibleCells);
 
@@ -347,6 +371,14 @@ namespace UTMS.WinForms
                 return maxOffset;
 
             return offset;
+        }
+
+        /// <summary>
+        /// Vrátí šířku vnitřní oblasti, do které se kreslí buňky pásky.
+        /// </summary>
+        private int GetTapeViewportWidth()
+        {
+            return Math.Max(CellWidth, panel.Width - 2 * TapeHorizontalPadding);
         }
 
         /// <summary>
