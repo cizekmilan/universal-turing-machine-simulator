@@ -256,6 +256,7 @@ Known limitations:
 - graph export currently writes DOT text, not rendered image files
 - the transition editor is functional, but still intentionally simple
 - `.btm` is useful as a formal encoded format, but `.tm` is the preferred human-editable format
+- the application UI and user-facing messages are in English, while code comments are currently Czech
 
 ## 🛣️ Roadmap
 

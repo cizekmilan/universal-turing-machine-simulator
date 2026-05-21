@@ -242,7 +242,7 @@ namespace UTMS.Core
 
             if (definition == null)
             {
-                errorMessage = "Definice stroje neni zadana.";
+                errorMessage = "Machine definition is not specified.";
                 LastError = errorMessage;
                 TapeChanged?.Invoke(this, EventArgs.Empty);
                 return false;
@@ -283,7 +283,7 @@ namespace UTMS.Core
         {
             if (program == null || machine == null)
             {
-                LastError = "Program neni nacten.";
+                LastError = "Program is not loaded.";
                 return null;
             }
 
@@ -324,8 +324,8 @@ namespace UTMS.Core
         {
             if (program == null || machine == null)
             {
-                LastError = "Program neni nacten.";
-                return "Chyba: " + LastError;
+                LastError = "Program is not loaded.";
+                return "Error: " + LastError;
             }
 
             try
@@ -357,7 +357,7 @@ namespace UTMS.Core
             catch (Exception e)
             {
                 LastError = e.Message;
-                return "Chyba: " + e.Message;
+                return "Error: " + e.Message;
             }
         }
 
@@ -376,18 +376,18 @@ namespace UTMS.Core
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("");
-            sb.AppendLine("********* STATISTIKA **********");
-            sb.AppendLine("Celkem provedeno kroku: " + stepCount);
-            sb.AppendLine("Posledni stav je: " + machine.CurrentState());
+            sb.AppendLine("********* SUMMARY **********");
+            sb.AppendLine("Total steps: " + stepCount);
+            sb.AppendLine("Last state: " + machine.CurrentState());
 
             if (stepCount >= TuringMachine.MaxSteps)
-                sb.AppendLine("Prilis velky pocet kroku.");
+                sb.AppendLine("Step limit reached.");
             if (machine.IsInFinalState())
-                sb.AppendLine("Koncovy stav.");
+                sb.AppendLine("Final state reached.");
             if (machine.HasOverflowed)
-                sb.AppendLine("Pristup mimo pasku.");
+                sb.AppendLine("Tape boundary was exceeded.");
             if (unknownState)
-                sb.AppendLine("V prechodovych funkcich nebyl nalezen stav \"" + machine.CurrentState() + "\".");
+                sb.AppendLine("No transition was found for state \"" + machine.CurrentState() + "\".");
 
             return sb.ToString();
         }

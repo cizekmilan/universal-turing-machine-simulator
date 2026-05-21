@@ -85,7 +85,7 @@ namespace UTMS.Core
 
             if (!binaryCode.StartsWith("1111"))
             {
-                errorMessage = "Binarni kod musi zacinat prefixem verze 2: 1111.";
+                errorMessage = "Binary code must start with version 2 prefix: 1111.";
                 return false;
             }
 
@@ -93,7 +93,7 @@ namespace UTMS.Core
             int metadataEnd = withoutPrefix.IndexOf("1111", StringComparison.Ordinal);
             if (metadataEnd <= 0)
             {
-                errorMessage = "Binarni kod verze 2 musi obsahovat oddelovac metadat 1111.";
+                errorMessage = "Version 2 binary code must contain metadata separator 1111.";
                 return false;
             }
 
@@ -102,7 +102,7 @@ namespace UTMS.Core
             string[] metadataParts = Split(metadataBlock, "111");
             if (metadataParts.Length != 3)
             {
-                errorMessage = "Metadata binarniho kodu musi obsahovat vstupni abecedu, paskovou abecedu a blank symbol.";
+                errorMessage = "Binary code metadata must contain input alphabet, tape alphabet and blank symbol.";
                 return false;
             }
 
@@ -125,7 +125,7 @@ namespace UTMS.Core
             int instructionEnd = machineBlock.IndexOf("111", StringComparison.Ordinal);
             if (instructionEnd < 0)
             {
-                errorMessage = "Binarni kod verze 2 musi obsahovat oddelovac instrukci a vstupu 111.";
+                errorMessage = "Version 2 binary code must contain instruction/input separator 111.";
                 return false;
             }
 
@@ -142,7 +142,7 @@ namespace UTMS.Core
         {
             if (string.IsNullOrEmpty(instructionBlock))
             {
-                errorMessage = "Blok instrukci nesmi byt prazdny.";
+                errorMessage = "Instruction block cannot be empty.";
                 return null;
             }
 
@@ -168,7 +168,7 @@ namespace UTMS.Core
             string[] parts = instruction.Split('1');
             if (parts.Length != 5)
             {
-                errorMessage = "Instrukce " + instruction + " musi obsahovat 5 casti oddelenych znakem \"1\".";
+                errorMessage = "Instruction " + instruction + " must contain 5 parts separated by \"1\".";
                 return null;
             }
 
@@ -183,7 +183,7 @@ namespace UTMS.Core
             char headMove = DecodeHeadMove(parts[4]);
             if (headMove == '?')
             {
-                errorMessage = string.Format("Format pro pohyb hlavy {0} dat je neplatny.", parts[4]);
+                errorMessage = string.Format("Head move code {0} is invalid.", parts[4]);
                 return null;
             }
 
@@ -212,14 +212,14 @@ namespace UTMS.Core
         {
             if (encodedSymbol.Length == 0)
             {
-                errorMessage = "Kod symbolu nesmi byt prazdny.";
+                errorMessage = "Symbol code cannot be empty.";
                 return null;
             }
 
             int index = encodedSymbol.Length - 1;
             if (index < 0 || index >= symbols.Count)
             {
-                errorMessage = string.Format("Symbol s kodem {0} neni definovan v paskove abecede.", encodedSymbol);
+                errorMessage = string.Format("Symbol code {0} is not defined in the tape alphabet.", encodedSymbol);
                 return null;
             }
 
@@ -269,7 +269,7 @@ namespace UTMS.Core
             {
                 if (binaryCode[i] != '0' && binaryCode[i] != '1')
                 {
-                    errorMessage = "Binarni kod smi obsahovat jen znaky 0 a 1, ale na pozici " + (i + 1).ToString() + " je jiny znak.";
+                    errorMessage = "Binary code may contain only 0 and 1, but position " + (i + 1).ToString() + " contains another character.";
                     return false;
                 }
             }
@@ -284,7 +284,7 @@ namespace UTMS.Core
         {
             if (encodedAlphabet.Length == 0)
             {
-                errorMessage = "Abeceda nesmi byt prazdna.";
+                errorMessage = "Alphabet cannot be empty.";
                 return null;
             }
 
@@ -298,7 +298,7 @@ namespace UTMS.Core
 
                 if (IndexOf(decoded, symbol.Value) >= 0)
                 {
-                    errorMessage = string.Format("Symbol \"{0}\" je v abecede uveden vicekrat.", symbol.Value);
+                    errorMessage = string.Format("Symbol \"{0}\" is listed more than once in the alphabet.", symbol.Value);
                     return null;
                 }
 
@@ -315,14 +315,14 @@ namespace UTMS.Core
         {
             if (encodedSymbol.Length == 0)
             {
-                errorMessage = "Kod znaku nesmi byt prazdny.";
+                errorMessage = "Character code cannot be empty.";
                 return null;
             }
 
             int charCode = encodedSymbol.Length - 1;
             if (charCode > char.MaxValue)
             {
-                errorMessage = "Kod znaku je mimo podporovany rozsah.";
+                errorMessage = "Character code is outside the supported range.";
                 return null;
             }
 
@@ -358,13 +358,13 @@ namespace UTMS.Core
         {
             if (IndexOf(tapeAlphabet, blankSymbol) < 0)
             {
-                errorMessage = "Blank symbol musi byt soucasti paskove abecedy.";
+                errorMessage = "Blank symbol must be part of the tape alphabet.";
                 return false;
             }
 
             if (IndexOf(alphabet, blankSymbol) >= 0)
             {
-                errorMessage = "Blank symbol nesmi byt soucasti vstupni abecedy.";
+                errorMessage = "Blank symbol cannot be part of the input alphabet.";
                 return false;
             }
 
@@ -372,7 +372,7 @@ namespace UTMS.Core
             {
                 if (IndexOf(tapeAlphabet, alphabet[i]) < 0)
                 {
-                    errorMessage = string.Format("Symbol \"{0}\" ze vstupni abecedy chybi v paskove abecede.", alphabet[i]);
+                    errorMessage = string.Format("Input symbol \"{0}\" is missing from the tape alphabet.", alphabet[i]);
                     return false;
                 }
             }

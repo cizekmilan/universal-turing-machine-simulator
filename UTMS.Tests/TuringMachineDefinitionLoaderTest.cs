@@ -87,7 +87,7 @@ namespace UTMS.Tests
                 TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(path, out errorMessage);
 
                 Assert.Null(definition);
-                Assert.Equal("Prechodove funkce obsahuji symbol mimo paskovou abecedu.", errorMessage);
+                Assert.Equal("Transition functions contain a symbol outside the tape alphabet.", errorMessage);
             }
             finally
             {
@@ -127,7 +127,7 @@ namespace UTMS.Tests
                 TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(path, out errorMessage);
 
                 Assert.Null(definition);
-                Assert.Equal("Program neobsahuje zadne prikazy.", errorMessage);
+                Assert.Equal("Program does not contain any transitions.", errorMessage);
             }
             finally
             {
@@ -146,7 +146,7 @@ namespace UTMS.Tests
             TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(null, out errorMessage);
 
             Assert.Null(definition);
-            Assert.Equal("Nazev souboru je prazdny.", errorMessage);
+            Assert.Equal("File name is empty.", errorMessage);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace UTMS.Tests
                 TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(path, out errorMessage);
 
                 Assert.Null(definition);
-                Assert.Equal("Objevila se syntakticka chyba. Program nemuze pokracovat.", errorMessage);
+                Assert.Equal("A syntax error was found. The program cannot continue.", errorMessage);
             }
             finally
             {
@@ -190,7 +190,7 @@ namespace UTMS.Tests
                 TuringMachineDefinition definition = TuringMachineDefinitionLoader.Load(path, out errorMessage);
 
                 Assert.Null(definition);
-                Assert.Contains("neni ve vstupni abecede", errorMessage);
+                Assert.Contains("not in the input alphabet", errorMessage);
             }
             finally
             {

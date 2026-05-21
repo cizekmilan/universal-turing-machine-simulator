@@ -38,7 +38,7 @@ namespace UTMS.Core
             errorMessage = "";
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                errorMessage = "Nazev souboru je prazdny.";
+                errorMessage = "File name is empty.";
                 return null;
             }
 
@@ -86,7 +86,7 @@ namespace UTMS.Core
                         if (!syntaxChecker.IsLineSyntaxValid(trimmedLine, ref syntaxErrorDescription))
                         {
                             syntaxError?.Invoke(syntaxErrorDescription, line);
-                            errorMessage = "Objevila se syntakticka chyba. Program nemuze pokracovat.";
+                            errorMessage = "A syntax error was found. The program cannot continue.";
                             return null;
                         }
 
@@ -105,7 +105,7 @@ namespace UTMS.Core
 
                 if (transitions.Count == 0)
                 {
-                    errorMessage = "Program neobsahuje zadne prikazy.";
+                    errorMessage = "Program does not contain any transitions.";
                     return null;
                 }
 
@@ -113,7 +113,7 @@ namespace UTMS.Core
             }
             catch (Exception ex)
             {
-                errorMessage = string.Format("Chyba na radku {0} ve vstupnim souboru {1}. Popis chyby: {2}. Vnitrni vyjimka: {3}.", lineNumber, fileName, ex.Message, ex.InnerException);
+                errorMessage = string.Format("Error on line {0} in input file {1}. Error description: {2}. Inner exception: {3}.", lineNumber, fileName, ex.Message, ex.InnerException);
                 return null;
             }
         }
@@ -171,13 +171,13 @@ namespace UTMS.Core
             string normalized = line.Trim().Replace(" ", "");
             if (normalized.StartsWith("alphabet="))
             {
-                parsedAlphabet = ParseAlphabetValue(SyntaxChecker.GetToken(normalized, '=', 2), "vstupni abeceda", ref errorMessage);
+                parsedAlphabet = ParseAlphabetValue(SyntaxChecker.GetToken(normalized, '=', 2), "input alphabet", ref errorMessage);
                 return true;
             }
 
             if (normalized.StartsWith("tapeAlphabet="))
             {
-                parsedTapeAlphabet = ParseAlphabetValue(SyntaxChecker.GetToken(normalized, '=', 2), "paskova abeceda", ref errorMessage);
+                parsedTapeAlphabet = ParseAlphabetValue(SyntaxChecker.GetToken(normalized, '=', 2), "tape alphabet", ref errorMessage);
                 return true;
             }
 
@@ -186,7 +186,7 @@ namespace UTMS.Core
                 string value = SyntaxChecker.GetToken(normalized, '=', 2);
                 if (value.Length != 1)
                 {
-                    errorMessage = "Blank symbol musi byt zapsan jako jediny znak.";
+                    errorMessage = "Blank symbol must be written as a single character.";
                     return true;
                 }
 
@@ -209,13 +209,13 @@ namespace UTMS.Core
 
             if (!fullTapeAlphabet.Contains(blankSymbol))
             {
-                errorMessage = "Blank symbol musi byt soucasti paskove abecedy.";
+                errorMessage = "Blank symbol must be part of the tape alphabet.";
                 return null;
             }
 
             if (inputAlphabet.Contains(blankSymbol))
             {
-                errorMessage = "Blank symbol nesmi byt soucasti vstupni abecedy.";
+                errorMessage = "Blank symbol cannot be part of the input alphabet.";
                 return null;
             }
 
@@ -223,7 +223,7 @@ namespace UTMS.Core
             {
                 if (!fullTapeAlphabet.Contains(inputAlphabet[i]))
                 {
-                    errorMessage = "Symbol \"" + inputAlphabet[i] + "\" ze vstupni abecedy chybi v paskove abecede.";
+                    errorMessage = "Input symbol \"" + inputAlphabet[i] + "\" is missing from the tape alphabet.";
                     return null;
                 }
             }
@@ -232,7 +232,7 @@ namespace UTMS.Core
             {
                 if (!inputAlphabet.Contains(inputData[i]))
                 {
-                    errorMessage = "Vstupni data obsahuji symbol \"" + inputData[i] + "\", ktery neni ve vstupni abecede.";
+                    errorMessage = "Input data contains symbol \"" + inputData[i] + "\", which is not in the input alphabet.";
                     return null;
                 }
             }
@@ -241,7 +241,7 @@ namespace UTMS.Core
             {
                 if (!fullTapeAlphabet.Contains(transition.InputSymbol) || !fullTapeAlphabet.Contains(transition.OutputSymbol))
                 {
-                    errorMessage = "Prechodove funkce obsahuji symbol mimo paskovou abecedu.";
+                    errorMessage = "Transition functions contain a symbol outside the tape alphabet.";
                     return null;
                 }
             }
@@ -256,14 +256,14 @@ namespace UTMS.Core
         {
             if (!value.StartsWith("{") || !value.EndsWith("}"))
             {
-                errorMessage = "Definice " + name + " musi byt ve tvaru {a,b,c}.";
+                errorMessage = "The " + name + " definition must have the form {a,b,c}.";
                 return null;
             }
 
             string content = value.Substring(1, value.Length - 2);
             if (content.Length == 0)
             {
-                errorMessage = "Definice " + name + " nesmi byt prazdna.";
+                errorMessage = "The " + name + " definition cannot be empty.";
                 return null;
             }
 
@@ -273,13 +273,13 @@ namespace UTMS.Core
             {
                 if (symbols[i].Length != 1)
                 {
-                    errorMessage = "Kazdy symbol v definici " + name + " musi byt jediny znak.";
+                    errorMessage = "Each symbol in the " + name + " definition must be a single character.";
                     return null;
                 }
 
                 if (alphabet.Contains(symbols[i][0]))
                 {
-                    errorMessage = "Symbol \"" + symbols[i][0] + "\" je v definici " + name + " uveden vicekrat.";
+                    errorMessage = "Symbol \"" + symbols[i][0] + "\" is listed more than once in the " + name + " definition.";
                     return null;
                 }
 

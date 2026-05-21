@@ -69,9 +69,9 @@ namespace UTMS.Tests
 
                 Assert.Equal(1, completedSteps);
                 Assert.Equal(1, simulator.StepCount);
-                Assert.Contains("Celkem provedeno kroku: 1", summary);
-                Assert.Contains("Posledni stav je: qF", summary);
-                Assert.Contains("Koncovy stav.", summary);
+                Assert.Contains("Total steps: 1", summary);
+                Assert.Contains("Last state: qF", summary);
+                Assert.Contains("Final state reached.", summary);
             }
             finally
             {
@@ -150,7 +150,7 @@ namespace UTMS.Tests
 
             Assert.Equal("qF", simulator.Machine.CurrentState());
             Assert.Equal('0', simulator.Machine.ReadSymbol());
-            Assert.Contains("Koncovy stav.", summary);
+            Assert.Contains("Final state reached.", summary);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace UTMS.Tests
 
                 Assert.Equal(1, simulator.StepCount);
                 Assert.True(simulator.LastStep.UnknownState);
-                Assert.Contains("V prechodovych funkcich nebyl nalezen stav \"q0\".", summary);
+                Assert.Contains("No transition was found for state \"q0\".", summary);
             }
             finally
             {

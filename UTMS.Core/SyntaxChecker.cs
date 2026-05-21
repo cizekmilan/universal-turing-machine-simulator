@@ -26,14 +26,14 @@
         {
             if (line == null)
             {
-                description = "Radek nesmi byt prazdny.";
+                description = "Line cannot be empty.";
                 return false;
             }
 
             line = line.Trim().Replace(" ", "");
             if (NumToken(line, '=') != 2)
             {
-                description = "Radek s instrukci musi obsahovat popis pocatecniho a koncoveho stavu oddelene rovnitkem.";
+                description = "Instruction line must contain input and output parts separated by an equals sign.";
                 return false;
             }
 
@@ -53,25 +53,25 @@
 
             if (NumToken(firstTuple, ',') != 2)
             {
-                description = "Mezi zavorkami musi byt dva udaje oddelene carkou.";
+                description = "The first tuple must contain two values separated by a comma.";
                 return false;
             }
 
             if (GetToken(firstTuple, ',', 2).Length != 1)
             {
-                description = "Druhy udaj v prvni zavorce musi byt jediny znak.";
+                description = "The second value in the first tuple must be a single character.";
                 return false;
             }
 
             if (NumToken(secondTuple, ',') != 3)
             {
-                description = "Mezi druhymi zavorkami musi byt tri udaje oddelene carkou.";
+                description = "The second tuple must contain three values separated by commas.";
                 return false;
             }
 
             if (GetToken(secondTuple, ',', 2).Length != 1)
             {
-                description = "Druhy udaj v druhe zavorce musi byt jediny znak.";
+                description = "The second value in the second tuple must be a single character.";
                 return false;
             }
 
@@ -80,7 +80,7 @@
             if (headMove == settings.MoveLeft.ToString() || headMove == settings.MoveRight.ToString() || headMove == settings.Stop.ToString())
                 return true;
 
-            description = string.Format("Jako treti udaj v druhe zavorce musi byt {0} nebo {1} nebo {2}.", settings.MoveLeft, settings.MoveRight, settings.Stop);
+            description = string.Format("The third value in the second tuple must be {0}, {1} or {2}.", settings.MoveLeft, settings.MoveRight, settings.Stop);
             return false;
         }
 
@@ -95,13 +95,13 @@
 
             if (openParen < 0 || closeParen < 0 || closeParen <= openParen + 1)
             {
-                description = "Kazda cast instrukce musi byt uzavrena v zavorkach.";
+                description = "Each instruction part must be enclosed in parentheses.";
                 return false;
             }
 
             if (openParen != 0 || closeParen != expression.Length - 1)
             {
-                description = "Zavorky musi obalovat celou cast instrukce.";
+                description = "Parentheses must enclose the whole instruction part.";
                 return false;
             }
 
