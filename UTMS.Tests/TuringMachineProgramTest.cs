@@ -1,13 +1,16 @@
-using TuringMachineSimulator;
+﻿using UTMS.Core;
 using Xunit;
 
-namespace UTMS.Test
+namespace UTMS.Tests
 {
     /// <summary>
     /// Testy přechodových funkcí, programu a stavu Turingova stroje.
     /// </summary>
     public class TuringMachineProgramTest
     {
+        /// <summary>
+        /// Ověřuje, že přechodová funkce se porovnává pouze podle vstupního stavu a čteného symbolu.
+        /// </summary>
         [Fact]
         public void TransitionFunction_MatchesOnlyStateAndInputSymbol()
         {
@@ -18,6 +21,9 @@ namespace UTMS.Test
             Assert.False(transition.Matches("q1", '1'));
         }
 
+        /// <summary>
+        /// Ověřuje přidání přechodů, událost načtení a vyhledání odpovídající přechodové funkce.
+        /// </summary>
         [Fact]
         public void TuringMachineProgram_InsertsRaisesEventAndFindsTransition()
         {
@@ -53,6 +59,9 @@ namespace UTMS.Test
             Assert.Equal(1, index);
         }
 
+        /// <summary>
+        /// Ověřuje výchozí hodnoty vracené při hledání neexistujícího přechodu.
+        /// </summary>
         [Fact]
         public void TuringMachineProgram_ReturnsDefaultsWhenTransitionDoesNotExist()
         {
@@ -71,6 +80,9 @@ namespace UTMS.Test
             Assert.Equal(-1, index);
         }
 
+        /// <summary>
+        /// Ověřuje, že formální definice zachová vstup, páskovou abecedu a oddělí pomocné symboly od vstupní abecedy.
+        /// </summary>
         [Fact]
         public void TuringMachineDefinition_ValidatesFormalDefinition()
         {
@@ -86,6 +98,9 @@ namespace UTMS.Test
             Assert.DoesNotContain('x', definition.Alphabet);
         }
 
+        /// <summary>
+        /// Ověřuje, že definice odmítne vstupní slovo obsahující symbol mimo vstupní abecedu.
+        /// </summary>
         [Fact]
         public void TuringMachineDefinition_RejectsInputOutsideAlphabet()
         {
@@ -97,6 +112,29 @@ namespace UTMS.Test
                 new TransitionFunction[] { new TransitionFunction("q0", '0', "qF", '0', 'S') }));
         }
 
+        /// <summary>
+        /// Ověřuje, že definice odmítne duplicitní přechody pro stejný stav a čtený symbol.
+        /// </summary>
+        [Fact]
+        public void TuringMachineDefinition_RejectsDuplicateTransitions()
+        {
+            System.ArgumentException exception = Assert.Throws<System.ArgumentException>(() => new TuringMachineDefinition(
+                new char[] { '0', '1' },
+                new char[] { '0', '1', '#' },
+                '#',
+                "",
+                new TransitionFunction[]
+                {
+                    new TransitionFunction("q0", '0', "q1", '1', 'R'),
+                    new TransitionFunction("q0", '0', "qF", '0', 'S')
+                }));
+
+            Assert.Contains("defined more than once", exception.Message);
+        }
+
+        /// <summary>
+        /// Ověřuje, že načtení nové definice nahradí původní obsah runtime programu.
+        /// </summary>
         [Fact]
         public void TuringMachineProgram_LoadDefinitionReplacesProgramContents()
         {
@@ -115,6 +153,9 @@ namespace UTMS.Test
             Assert.Equal('1', program.Transitions[0].InputSymbol);
         }
 
+        /// <summary>
+        /// Ověřuje práci s aktuálním stavem stroje a rozpoznání koncového stavu.
+        /// </summary>
         [Fact]
         public void TuringMachine_TracksCurrentAndFinalState()
         {

@@ -1,4 +1,4 @@
-﻿namespace TuringMachineSimulator.Properties
+﻿namespace UTMS.Core.Properties
 {
     internal sealed partial class Settings
     {

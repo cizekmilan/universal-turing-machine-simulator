@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TuringMachineSimulator
+namespace UTMS.Core
 {
     /// <summary>
     /// Konečná páska používaná simulátorem.
@@ -167,6 +167,9 @@ namespace TuringMachineSimulator
             return headIndex;
         }
 
+        /// <summary>
+        /// Vyčistí obsah pásky, vrátí hlavu na výchozí pozici a zruší příznak přetečení.
+        /// </summary>
         private void Reset()
         {
             for (int i = 0; i < TapeLength; i++)
@@ -205,6 +208,9 @@ namespace TuringMachineSimulator
 
         private string currentState;
 
+        /// <summary>
+        /// Načte symboly pohybů a limit kroků z nastavení aplikace.
+        /// </summary>
         static TuringMachine()
         {
             MoveLeftSymbol = Properties.Settings.Default.MoveLeft;

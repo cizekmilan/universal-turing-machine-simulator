@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>TuringMachineSimulator</RootNamespace>
-    <AssemblyName>TuringSimulator</AssemblyName>
+    <RootNamespace>UTMS.Core</RootNamespace>
+    <AssemblyName>UTMS.Core</AssemblyName>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -15,8 +15,9 @@
     <Compile Include="TuringMachine.cs" />
     <Compile Include="TuringMachineDefinition.cs" />
     <Compile Include="TuringMachineDefinitionLoader.cs" />
+    <Compile Include="TuringMachineGraphExporter.cs" />
     <Compile Include="TuringMachineProgram.cs" />
     <Compile Include="TuringMachineProgramSerializer.cs" />
-    <Compile Include="TuringMachineSimulator.cs" />
+    <Compile Include="TuringSimulator.cs" />
   </ItemGroup>
 </Project>

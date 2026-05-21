@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace TuringMachineSimulator
+namespace UTMS.Core
 {
     /// <summary>
     /// Zpracovává binárně zakódovaný program Turingova stroje.
@@ -74,6 +74,9 @@ namespace TuringMachineSimulator
             return transitions;
         }
 
+        /// <summary>
+        /// Rozdělí binární program na metadata, blok instrukcí a vstupní data.
+        /// </summary>
         private bool ParseVersion2Code(ref string errorMessage, out string instructionBlock)
         {
             instructionBlock = "";
@@ -132,6 +135,9 @@ namespace TuringMachineSimulator
             return InputData != null;
         }
 
+        /// <summary>
+        /// Dekóduje blok přechodových funkcí oddělených dvojicí jedniček.
+        /// </summary>
         private List<TransitionFunction> DecodeInstructionBlock(string instructionBlock, IList<char> symbols, ref string errorMessage)
         {
             if (string.IsNullOrEmpty(instructionBlock))
@@ -154,6 +160,9 @@ namespace TuringMachineSimulator
             return transitions;
         }
 
+        /// <summary>
+        /// Dekóduje jednu binární instrukci do přechodové funkce.
+        /// </summary>
         private TransitionFunction DecodeInstruction(string instruction, IList<char> symbols, ref string errorMessage)
         {
             string[] parts = instruction.Split('1');
@@ -181,6 +190,9 @@ namespace TuringMachineSimulator
             return new TransitionFunction(parts[0], inputSymbol.Value, parts[2], outputSymbol.Value, headMove);
         }
 
+        /// <summary>
+        /// Převede binární kód pohybu hlavy na symbol používaný simulátorem.
+        /// </summary>
         private char DecodeHeadMove(string encodedMove)
         {
             if (encodedMove == "0")
@@ -193,6 +205,9 @@ namespace TuringMachineSimulator
             return '?';
         }
 
+        /// <summary>
+        /// Dekóduje symbol podle jeho indexu v předané abecedě.
+        /// </summary>
         private char? DecodeSymbol(string encodedSymbol, IList<char> symbols, ref string errorMessage)
         {
             if (encodedSymbol.Length == 0)
@@ -211,6 +226,9 @@ namespace TuringMachineSimulator
             return symbols[index];
         }
 
+        /// <summary>
+        /// Převede dočasné binární názvy stavů na čitelné názvy q0, qN a koncový stav.
+        /// </summary>
         private static void DecodeStateNames(IList<TransitionFunction> transitions)
         {
             int longestStateCode = 0;
@@ -229,6 +247,9 @@ namespace TuringMachineSimulator
             }
         }
 
+        /// <summary>
+        /// Převede jeden zakódovaný stav na uživatelský název stavu.
+        /// </summary>
         private static string DecodeStateName(string encodedState, int finalStateLength)
         {
             if (encodedState.Length == 1)
@@ -239,6 +260,9 @@ namespace TuringMachineSimulator
             return "q" + (encodedState.Length - 1).ToString();
         }
 
+        /// <summary>
+        /// Ověří, že binární program obsahuje pouze znaky 0 a 1.
+        /// </summary>
         private bool ValidateBinaryAlphabet(ref string errorMessage)
         {
             for (int i = 0; i < binaryCode.Length; i++)
@@ -253,6 +277,9 @@ namespace TuringMachineSimulator
             return true;
         }
 
+        /// <summary>
+        /// Dekóduje znakovou množinu uloženou v metadatech binárního formátu.
+        /// </summary>
         private List<char> DecodeCharacterSet(string encodedAlphabet, ref string errorMessage)
         {
             if (encodedAlphabet.Length == 0)
@@ -281,6 +308,9 @@ namespace TuringMachineSimulator
             return decoded;
         }
 
+        /// <summary>
+        /// Dekóduje jeden znak uložený jako posloupnost nul.
+        /// </summary>
         private char? DecodeCharacter(string encodedSymbol, ref string errorMessage)
         {
             if (encodedSymbol.Length == 0)
@@ -299,6 +329,9 @@ namespace TuringMachineSimulator
             return (char)charCode;
         }
 
+        /// <summary>
+        /// Dekóduje vstupní slovo uložené za blokem instrukcí.
+        /// </summary>
         private string DecodeInputData(string inputBlock, ref string errorMessage)
         {
             if (inputBlock.Length == 0)
@@ -318,6 +351,9 @@ namespace TuringMachineSimulator
             return new string(input);
         }
 
+        /// <summary>
+        /// Ověří vztah vstupní abecedy, páskové abecedy a blank symbolu načtených z metadat.
+        /// </summary>
         private bool ValidateDefinition(ref string errorMessage)
         {
             if (IndexOf(tapeAlphabet, blankSymbol) < 0)
@@ -344,11 +380,17 @@ namespace TuringMachineSimulator
             return true;
         }
 
+        /// <summary>
+        /// Rozdělí text podle víceznakového oddělovače.
+        /// </summary>
         private static string[] Split(string text, string delimiter)
         {
             return text.Split(new string[] { delimiter }, StringSplitOptions.None);
         }
 
+        /// <summary>
+        /// Najde index znaku v seznamu bez závislosti na LINQ.
+        /// </summary>
         private static int IndexOf(IList<char> values, char value)
         {
             for (int i = 0; i < values.Count; i++)

@@ -1,15 +1,18 @@
-using System;
+﻿using System;
 using System.IO;
-using TuringMachineSimulator;
+using UTMS.Core;
 using Xunit;
 
-namespace UTMS.Test
+namespace UTMS.Tests
 {
     /// <summary>
     /// Testy načítání souborů do formální definice Turingova stroje.
     /// </summary>
     public class TuringMachineDefinitionLoaderTest
     {
+        /// <summary>
+        /// Ověřuje načtení platného textového souboru včetně abeced, vstupu a přechodů.
+        /// </summary>
         [Fact]
         public void Load_ReturnsDefinitionFromTextFile()
         {
@@ -37,6 +40,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že loader přijme vlastní blank symbol definovaný v programu.
+        /// </summary>
         [Fact]
         public void Load_AcceptsCustomBlankSymbolFromTextFile()
         {
@@ -62,6 +68,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že symbol mimo páskovou abecedu způsobí validační chybu načítání.
+        /// </summary>
         [Fact]
         public void Load_ReturnsNullAndErrorForInvalidFile()
         {
@@ -86,6 +95,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že varianta API bez out chyby převádí neplatný program na výjimku.
+        /// </summary>
         [Fact]
         public void Load_ThrowsWhenUsingExceptionBasedApi()
         {
@@ -101,6 +113,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že soubor bez přechodových příkazů je odmítnut jako prázdný program.
+        /// </summary>
         [Fact]
         public void Load_ReturnsErrorForEmptyProgram()
         {
@@ -120,6 +135,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že prázdný název souboru vrátí srozumitelnou chybu.
+        /// </summary>
         [Fact]
         public void Load_ReturnsErrorForMissingFileName()
         {
@@ -131,6 +149,9 @@ namespace UTMS.Test
             Assert.Equal("Nazev souboru je prazdny.", errorMessage);
         }
 
+        /// <summary>
+        /// Ověřuje, že syntakticky neplatný řádek zastaví načítání s obecnou syntaktickou chybou.
+        /// </summary>
         [Fact]
         public void Load_ReturnsErrorForSyntaxProblem()
         {
@@ -150,6 +171,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že vstupní slovo nesmí obsahovat symbol mimo deklarovanou vstupní abecedu.
+        /// </summary>
         [Fact]
         public void Load_ReturnsErrorForInputOutsideInputAlphabet()
         {

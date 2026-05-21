@@ -1,5 +1,5 @@
-// Úloha: Odečte 1 od binárního čísla se zachováním původní šířky.
-// Pokud je vstup samá nula, stroj provede podtečení modulo daná šířka.
+// Úloha: Dekrementuje binární číslo o 1.
+// Například 1000 -> 0111.
 
 alphabet = {0,1}
 tapeAlphabet = {0,1,#}
@@ -14,5 +14,4 @@ blank = #
 (q2, 0) = (q2, 0, L)
 (q2, 1) = (q2, 1, L)
 (q2, #) = (qF, #, R)
-
 w = 1000

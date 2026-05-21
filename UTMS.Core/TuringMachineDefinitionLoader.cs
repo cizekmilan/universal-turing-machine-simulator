@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace TuringMachineSimulator
+namespace UTMS.Core
 {
     /// <summary>
     /// Načítá soubory Turingova stroje do čisté formální definice.
@@ -118,6 +118,9 @@ namespace TuringMachineSimulator
             }
         }
 
+        /// <summary>
+        /// Načte jeden binárně zakódovaný řádek včetně metadat a přidá jeho přechody do výsledku.
+        /// </summary>
         private static bool TryParseBinaryLine(string line, List<TransitionFunction> transitions, ref List<char> parsedAlphabet, ref List<char> parsedTapeAlphabet, ref char? parsedBlankSymbol, ref string inputData, ref string errorMessage)
         {
             BinaryCode binaryCode = new BinaryCode(line);
@@ -133,6 +136,9 @@ namespace TuringMachineSimulator
             return true;
         }
 
+        /// <summary>
+        /// Rozpozná řádek se vstupním slovem nebo řádek s přechodovou funkcí.
+        /// </summary>
         private static void ParseLine(string line, out TransitionFunction transition, out string inputData)
         {
             string normalized = line.Trim().Replace(" ", "");
@@ -157,6 +163,9 @@ namespace TuringMachineSimulator
                 SyntaxChecker.GetToken(secondTuple, ',', 3)[0]);
         }
 
+        /// <summary>
+        /// Rozpozná metadata textového formátu: vstupní abecedu, páskovou abecedu a blank symbol.
+        /// </summary>
         private static bool TryParseDefinitionLine(string line, ref List<char> parsedAlphabet, ref List<char> parsedTapeAlphabet, ref char? parsedBlankSymbol, ref string errorMessage)
         {
             string normalized = line.Trim().Replace(" ", "");
@@ -188,6 +197,9 @@ namespace TuringMachineSimulator
             return false;
         }
 
+        /// <summary>
+        /// Sestaví formální definici stroje z načtených metadat a přechodů.
+        /// </summary>
         private static TuringMachineDefinition CreateDefinition(List<char> parsedAlphabet, List<char> parsedTapeAlphabet, char? parsedBlankSymbol, string inputData, List<TransitionFunction> transitions, ref string errorMessage)
         {
             char blankSymbol = parsedBlankSymbol.HasValue ? parsedBlankSymbol.Value : Tape.DefaultBlankSymbol;
@@ -237,6 +249,9 @@ namespace TuringMachineSimulator
             return new TuringMachineDefinition(inputAlphabet, fullTapeAlphabet, blankSymbol, inputData, transitions);
         }
 
+        /// <summary>
+        /// Převede hodnotu ve tvaru {a,b,c} na seznam znaků a ověří duplicity.
+        /// </summary>
         private static List<char> ParseAlphabetValue(string value, string name, ref string errorMessage)
         {
             if (!value.StartsWith("{") || !value.EndsWith("}"))
@@ -274,6 +289,9 @@ namespace TuringMachineSimulator
             return alphabet;
         }
 
+        /// <summary>
+        /// Dopočítá páskovou abecedu z input abecedy, blank symbolu a symbolů použitých v přechodech.
+        /// </summary>
         private static List<char> InferTapeAlphabet(IEnumerable<char> inputAlphabet, char blankSymbol, IEnumerable<TransitionFunction> transitions)
         {
             List<char> fullTapeAlphabet = new List<char>();
@@ -289,6 +307,9 @@ namespace TuringMachineSimulator
             return fullTapeAlphabet;
         }
 
+        /// <summary>
+        /// Vrátí obsah první dvojice závorek v přechodové části řádku.
+        /// </summary>
         private static string GetTupleContent(string expression)
         {
             int openParen = expression.IndexOf('(');
@@ -296,12 +317,18 @@ namespace TuringMachineSimulator
             return expression.Substring(openParen + 1, closeParen - openParen - 1);
         }
 
+        /// <summary>
+        /// Přidá do cílového seznamu pouze znaky, které v něm dosud nejsou.
+        /// </summary>
         private static void AddDistinct(IList<char> target, IEnumerable<char> values)
         {
             foreach (char value in values)
                 AddDistinct(target, value);
         }
 
+        /// <summary>
+        /// Přidá znak do cílového seznamu bez vytvoření duplicity.
+        /// </summary>
         private static void AddDistinct(IList<char> target, char value)
         {
             if (!target.Contains(value))

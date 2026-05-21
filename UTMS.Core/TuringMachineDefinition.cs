@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace TuringMachineSimulator
+namespace UTMS.Core
 {
     /// <summary>
     /// Formální definice Turingova stroje včetně vstupu pro simulaci.
@@ -84,6 +84,9 @@ namespace TuringMachineSimulator
             return new TuringMachineDefinition(inferredAlphabet, inferredTapeAlphabet, blankSymbol, inputData, transitionList);
         }
 
+        /// <summary>
+        /// Ověří vztahy mezi abecedami, vstupem, blank symbolem a determinističností přechodů.
+        /// </summary>
         private void Validate()
         {
             if (IndexOf(tapeAlphabet, BlankSymbol) < 0)
@@ -111,8 +114,26 @@ namespace TuringMachineSimulator
                 if (IndexOf(tapeAlphabet, transition.OutputSymbol) < 0)
                     throw new ArgumentException(string.Format("Output symbol \"{0}\" is not defined in the tape alphabet.", transition.OutputSymbol));
             }
+
+            // Deterministický stroj smí mít pro dvojici stav + čtený symbol pouze jeden přechod.
+            for (int i = 0; i < transitions.Count; i++)
+            {
+                for (int j = i + 1; j < transitions.Count; j++)
+                {
+                    if (transitions[i].InputState == transitions[j].InputState && transitions[i].InputSymbol == transitions[j].InputSymbol)
+                    {
+                        throw new ArgumentException(string.Format(
+                            "Transition for state \"{0}\" and input symbol \"{1}\" is defined more than once.",
+                            transitions[i].InputState,
+                            transitions[i].InputSymbol));
+                    }
+                }
+            }
         }
 
+        /// <summary>
+        /// Vytvoří neprázdnou abecedu bez duplicit.
+        /// </summary>
         private static List<char> NormalizeAlphabet(IEnumerable<char> values, string argumentName)
         {
             if (values == null)
@@ -126,6 +147,9 @@ namespace TuringMachineSimulator
             return result;
         }
 
+        /// <summary>
+        /// Vytvoří oddělenou kopii přechodů, aby definice nebyla navázaná na původní kolekci.
+        /// </summary>
         private static List<TransitionFunction> CopyTransitions(IEnumerable<TransitionFunction> values)
         {
             if (values == null)
@@ -140,18 +164,27 @@ namespace TuringMachineSimulator
             return result;
         }
 
+        /// <summary>
+        /// Přidá do cílového seznamu pouze nové znaky z předané kolekce.
+        /// </summary>
         private static void AddDistinct(IList<char> target, IEnumerable<char> values)
         {
             foreach (char value in values)
                 AddDistinct(target, value);
         }
 
+        /// <summary>
+        /// Přidá znak do seznamu pouze v případě, že v něm ještě není.
+        /// </summary>
         private static void AddDistinct(IList<char> target, char value)
         {
             if (IndexOf(target, value) < 0)
                 target.Add(value);
         }
 
+        /// <summary>
+        /// Najde index znaku v seznamu bez závislosti na LINQ.
+        /// </summary>
         private static int IndexOf(IList<char> values, char value)
         {
             for (int i = 0; i < values.Count; i++)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace TuringMachineSimulator
+namespace UTMS.Core
 {
     /// <summary>
     /// Událost dokončení jednoho kroku simulace.
@@ -153,6 +153,11 @@ namespace TuringMachineSimulator
         }
 
         /// <summary>
+        /// Formální definice aktuálně načteného stroje.
+        /// </summary>
+        public TuringMachineDefinition Definition { get; private set; }
+
+        /// <summary>
         /// Počet provedených kroků.
         /// </summary>
         public int StepCount
@@ -197,6 +202,7 @@ namespace TuringMachineSimulator
             unknownState = false;
             LastStep = null;
             LastError = "";
+            Definition = null;
             machine = new TuringMachine();
             program = CreateProgram();
 
@@ -230,6 +236,7 @@ namespace TuringMachineSimulator
             unknownState = false;
             LastStep = null;
             LastError = "";
+            Definition = null;
             machine = new TuringMachine();
             program = CreateProgram();
 
@@ -244,6 +251,9 @@ namespace TuringMachineSimulator
             return LoadProgramCore(definition, out errorMessage);
         }
 
+        /// <summary>
+        /// Vytvoří runtime program a přepojí jeho událost načtení přechodu na simulátor.
+        /// </summary>
         private TuringMachineProgram CreateProgram()
         {
             TuringMachineProgram newProgram = new TuringMachineProgram();
@@ -251,8 +261,12 @@ namespace TuringMachineSimulator
             return newProgram;
         }
 
+        /// <summary>
+        /// Dokončí načtení ověřené definice do programu, stroje a pásky.
+        /// </summary>
         private bool LoadProgramCore(TuringMachineDefinition definition, out string errorMessage)
         {
+            Definition = definition;
             machine = new TuringMachine(definition.BlankSymbol);
             program.LoadDefinition(definition);
             machine.SetData(definition.InputData);
@@ -347,11 +361,17 @@ namespace TuringMachineSimulator
             }
         }
 
+        /// <summary>
+        /// Určuje, zda simulace může pokračovat dalším krokem.
+        /// </summary>
         private bool CanContinue()
         {
             return stepCount < TuringMachine.MaxSteps && !machine.IsInFinalState() && !machine.HasOverflowed && !unknownState;
         }
 
+        /// <summary>
+        /// Sestaví textové shrnutí důvodu zastavení a základní statistiky simulace.
+        /// </summary>
         private string BuildSummary()
         {
             StringBuilder sb = new StringBuilder();

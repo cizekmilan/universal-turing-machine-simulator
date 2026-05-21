@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace TuringMachineSimulator
+namespace UTMS.Core
 {
     /// <summary>
     /// Ukládá programy Turingova stroje do textového a binárního formátu.
@@ -101,7 +101,7 @@ namespace TuringMachineSimulator
         }
 
         /// <summary>
-        /// Vytvoří binární reprezentaci programu ve formátu .btm verze 2.
+        /// Vytvoří binární reprezentaci programu ve formátu .btm.
         /// </summary>
         public static string ToBinary(TuringMachineDefinition definition)
         {
@@ -112,7 +112,7 @@ namespace TuringMachineSimulator
         }
 
         /// <summary>
-        /// Vytvoří binární reprezentaci programu ve formátu .btm verze 2.
+        /// Vytvoří binární reprezentaci programu ve formátu .btm.
         /// </summary>
         public static string ToBinary(IEnumerable<TransitionFunction> program, string inputData)
         {
@@ -185,6 +185,9 @@ namespace TuringMachineSimulator
             File.WriteAllText(fileName, ToBinary(program, inputData, alphabet, tapeAlphabet, blankSymbol));
         }
 
+        /// <summary>
+        /// Zapíše abecedu do textového formátu {a,b,c}.
+        /// </summary>
         private static void AppendAlphabet(StringBuilder sb, IEnumerable<char> alphabet)
         {
             sb.Append("{");
@@ -201,6 +204,9 @@ namespace TuringMachineSimulator
             sb.Append("}");
         }
 
+        /// <summary>
+        /// Určí délku kódu koncového stavu tak, aby byla delší než všechny běžné číslované stavy.
+        /// </summary>
         private static int GetFinalStateLength(IEnumerable<TransitionFunction> transitions)
         {
             int maxStateIndex = 0;
@@ -213,6 +219,9 @@ namespace TuringMachineSimulator
             return maxStateIndex + 2;
         }
 
+        /// <summary>
+        /// Převede název stavu qN nebo koncový stav na číselný index pro binární kód.
+        /// </summary>
         private static int GetNumberedStateIndex(string state)
         {
             if (state == TransitionFunction.FinalStateName)
@@ -225,6 +234,9 @@ namespace TuringMachineSimulator
             return int.Parse(match.Groups[1].Value);
         }
 
+        /// <summary>
+        /// Zakóduje stav jako posloupnost nul podle formátu .btm.
+        /// </summary>
         private static string EncodeState(string state, int finalStateLength)
         {
             if (state == TransitionFunction.FinalStateName)
@@ -234,6 +246,9 @@ namespace TuringMachineSimulator
             return new string('0', stateIndex + 1);
         }
 
+        /// <summary>
+        /// Zakóduje páskový symbol podle jeho indexu v páskové abecedě.
+        /// </summary>
         private static string EncodeSymbol(char symbol, IList<char> tapeAlphabet)
         {
             int index = IndexOf(tapeAlphabet, symbol);
@@ -243,6 +258,9 @@ namespace TuringMachineSimulator
             throw new ArgumentException(string.Format("Symbol \"{0}\" is not defined in the tape alphabet.", symbol));
         }
 
+        /// <summary>
+        /// Zakóduje pohyb hlavy do pevné binární reprezentace.
+        /// </summary>
         private static string EncodeMove(char move)
         {
             if (move == TuringMachine.MoveLeftSymbol)
@@ -255,6 +273,9 @@ namespace TuringMachineSimulator
             throw new ArgumentException(string.Format("Head move \"{0}\" cannot be written to the binary format. Supported moves are {1}, {2} and {3}.", move, TuringMachine.MoveLeftSymbol, TuringMachine.MoveRightSymbol, TuringMachine.StopSymbol));
         }
 
+        /// <summary>
+        /// Zakóduje celou znakovou abecedu včetně oddělovačů symbolů.
+        /// </summary>
         private static string EncodeCharacterSet(IEnumerable<char> alphabet)
         {
             List<string> encodedSymbols = new List<string>();
@@ -264,11 +285,17 @@ namespace TuringMachineSimulator
             return string.Join("11", encodedSymbols);
         }
 
+        /// <summary>
+        /// Zakóduje jeden znak jako posloupnost nul podle jeho znakové hodnoty.
+        /// </summary>
         private static string EncodeCharacter(char symbol)
         {
             return new string('0', symbol + 1);
         }
 
+        /// <summary>
+        /// Zakóduje vstupní slovo pomocí indexů ve vstupní abecedě.
+        /// </summary>
         private static string EncodeInputData(string inputData, IList<char> alphabet)
         {
             if (string.IsNullOrEmpty(inputData))
@@ -287,6 +314,9 @@ namespace TuringMachineSimulator
             return string.Join("1", encodedSymbols);
         }
 
+        /// <summary>
+        /// Sestaví výchozí vstupní abecedu rozšířenou o symboly ze vstupního slova.
+        /// </summary>
         private static List<char> BuildAlphabet(string inputData)
         {
             List<char> alphabet = new List<char>(DefaultAlphabet);
@@ -296,6 +326,9 @@ namespace TuringMachineSimulator
             return alphabet;
         }
 
+        /// <summary>
+        /// Sestaví páskovou abecedu z input abecedy, blank symbolu a symbolů v přechodech.
+        /// </summary>
         private static List<char> BuildTapeAlphabet(IEnumerable<TransitionFunction> transitions, IEnumerable<char> alphabet, char blankSymbol)
         {
             List<char> tapeAlphabet = new List<char>();
@@ -311,6 +344,9 @@ namespace TuringMachineSimulator
             return tapeAlphabet;
         }
 
+        /// <summary>
+        /// Normalizuje abecedu do neprázdného seznamu bez duplicit.
+        /// </summary>
         private static List<char> NormalizeAlphabet(IEnumerable<char> alphabet, string argumentName)
         {
             if (alphabet == null)
@@ -324,6 +360,9 @@ namespace TuringMachineSimulator
             return normalized;
         }
 
+        /// <summary>
+        /// Ověří základní vztahy mezi vstupní abecedou, páskovou abecedou, blank symbolem a vstupem.
+        /// </summary>
         private static void ValidateDefinition(IList<char> alphabet, IList<char> tapeAlphabet, char blankSymbol, string inputData)
         {
             if (IndexOf(tapeAlphabet, blankSymbol) < 0)
@@ -348,6 +387,9 @@ namespace TuringMachineSimulator
             }
         }
 
+        /// <summary>
+        /// Ověří, že čtený i zapisovaný symbol přechodu patří do páskové abecedy.
+        /// </summary>
         private static void ValidateTransitionSymbols(TransitionFunction transition, IList<char> tapeAlphabet)
         {
             if (IndexOf(tapeAlphabet, transition.InputSymbol) < 0)
@@ -356,6 +398,9 @@ namespace TuringMachineSimulator
                 throw new ArgumentException(string.Format("Output symbol \"{0}\" is not defined in the tape alphabet.", transition.OutputSymbol));
         }
 
+        /// <summary>
+        /// Najde index znaku v seznamu bez závislosti na LINQ.
+        /// </summary>
         private static int IndexOf(IList<char> values, char value)
         {
             for (int i = 0; i < values.Count; i++)
@@ -367,12 +412,18 @@ namespace TuringMachineSimulator
             return -1;
         }
 
+        /// <summary>
+        /// Přidá do cílového seznamu pouze nové znaky z předané kolekce.
+        /// </summary>
         private static void AddDistinct(IList<char> target, IEnumerable<char> values)
         {
             foreach (char value in values)
                 AddDistinct(target, value);
         }
 
+        /// <summary>
+        /// Přidá znak do seznamu pouze v případě, že v něm ještě není.
+        /// </summary>
         private static void AddDistinct(IList<char> target, char value)
         {
             if (IndexOf(target, value) < 0)

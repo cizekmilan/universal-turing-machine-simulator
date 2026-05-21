@@ -1,14 +1,17 @@
 ﻿using System.Linq;
-using TuringMachineSimulator;
+using UTMS.Core;
 using Xunit;
 
-namespace UTMS.Test
+namespace UTMS.Tests
 {
     /// <summary>
     /// Testy práce s páskou a detekce jejího přetečení.
     /// </summary>
     public class TapeTest
     {
+        /// <summary>
+        /// Ověřuje, že nová páska má nastavenou délku, výchozí pozici hlavy a blank symboly.
+        /// </summary>
         [Fact]
         public void Constructor_CreatesBlankTapeWithHeadAtConfiguredStart()
         {
@@ -20,6 +23,9 @@ namespace UTMS.Test
             Assert.False(tape.HasOverflowed);
         }
 
+        /// <summary>
+        /// Ověřuje, že vstupní slovo se ořízne a zapíše od konfigurované startovní pozice.
+        /// </summary>
         [Fact]
         public void SetData_TrimsInputAndWritesItFromStartPosition()
         {
@@ -33,6 +39,9 @@ namespace UTMS.Test
             Assert.True(tape.Cells.Take(10).All(symbol => symbol == '#'));
         }
 
+        /// <summary>
+        /// Ověřuje, že páska respektuje vlastní blank symbol i po zápisu vstupních dat.
+        /// </summary>
         [Fact]
         public void Constructor_UsesConfiguredBlankSymbol()
         {
@@ -47,6 +56,9 @@ namespace UTMS.Test
             Assert.Equal('_', tape.Cells[11]);
         }
 
+        /// <summary>
+        /// Ověřuje, že opakované nastavení vstupu vyčistí starý obsah pásky a vrátí hlavu na začátek.
+        /// </summary>
         [Fact]
         public void SetData_ClearsPreviousTapeContents()
         {
@@ -63,6 +75,9 @@ namespace UTMS.Test
             Assert.False(tape.HasOverflowed);
         }
 
+        /// <summary>
+        /// Ověřuje, že příliš dlouhé vstupní slovo nastaví příznak přetečení pásky.
+        /// </summary>
         [Fact]
         public void SetData_MarksOverflowWhenInputDoesNotFitOnTape()
         {
@@ -76,6 +91,9 @@ namespace UTMS.Test
             Assert.Equal(10, tape.HeadIndex());
         }
 
+        /// <summary>
+        /// Ověřuje posun hlavy doleva a doprava včetně detekce pokusu opustit pásku.
+        /// </summary>
         [Fact]
         public void HeadMovement_UpdatesIndexAndDetectsTapeOverflow()
         {

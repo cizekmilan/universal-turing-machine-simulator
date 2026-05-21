@@ -3,8 +3,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>TuringMachineSimulator</RootNamespace>
-    <AssemblyName>TuringMachineSimulator</AssemblyName>
+    <RootNamespace>UTMS.WinForms</RootNamespace>
+    <AssemblyName>UTMS.WinForms</AssemblyName>
     <ApplicationIcon>MainForm.ico</ApplicationIcon>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
@@ -20,6 +20,21 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="PromptDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PromptDialog.Designer.cs">
+      <DependentUpon>PromptDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SimulationVisualState.cs" />
+    <Compile Include="SoundEffectPlayer.cs" />
+    <Compile Include="TapeRenderer.cs" />
+    <Compile Include="TransitionEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransitionEditorForm.Designer.cs">
+      <DependentUpon>TransitionEditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -40,6 +55,12 @@
 
   <ItemGroup>
     <Content Include="MainForm.ico" />
+    <Content Include="Assets\tape_tick.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\machine_stop.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

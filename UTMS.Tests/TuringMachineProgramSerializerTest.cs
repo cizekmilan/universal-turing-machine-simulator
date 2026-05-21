@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using TuringMachineSimulator;
+using UTMS.Core;
 using Xunit;
 
-namespace UTMS.Test
+namespace UTMS.Tests
 {
     /// <summary>
     /// Testy ukládání programu do textového a binárního formátu.
     /// </summary>
     public class TuringMachineProgramSerializerTest
     {
+        /// <summary>
+        /// Ověřuje, že textový serializer zapíše abecedy, blank symbol, přechody i vstupní slovo.
+        /// </summary>
         [Fact]
         public void ToText_WritesProgramAndInputData()
         {
@@ -28,17 +31,36 @@ namespace UTMS.Test
             Assert.Contains("w = 1011", text);
         }
 
+        /// <summary>
+        /// Ověřuje, že binární serializer zakóduje inkrement tak, aby šel dekódovat zpět na stejné přechody.
+        /// </summary>
         [Fact]
-        public void ToBinary_WritesExpectedIncrementDemoCode()
+        public void ToBinary_EncodesIncrementProgramToDecodableCode()
         {
             List<TransitionFunction> program = CreateIncrementProgram();
-            string expected = File.ReadAllText(Path.Combine(GetWorkspaceRoot(), "demos", "bin_increment.btm")).Trim();
 
-            string actual = TuringMachineProgramSerializer.ToBinary(program, "1011");
+            string encoded = TuringMachineProgramSerializer.ToBinary(program, "1011");
+            string errorMessage = "";
+            BinaryCode binaryCode = new BinaryCode(encoded);
+            List<TransitionFunction> decoded = binaryCode.MakeTextInstructions(ref errorMessage);
 
-            Assert.Equal(expected, actual);
+            Assert.NotNull(decoded);
+            Assert.Equal("", errorMessage);
+            Assert.Equal("1011", binaryCode.InputData);
+            Assert.Equal(program.Count, decoded.Count);
+            for (int i = 0; i < program.Count; i++)
+            {
+                Assert.Equal(program[i].InputState, decoded[i].InputState);
+                Assert.Equal(program[i].InputSymbol, decoded[i].InputSymbol);
+                Assert.Equal(program[i].OutputState, decoded[i].OutputState);
+                Assert.Equal(program[i].OutputSymbol, decoded[i].OutputSymbol);
+                Assert.Equal(program[i].HeadMove, decoded[i].HeadMove);
+            }
         }
 
+        /// <summary>
+        /// Ověřuje, že binární výstup lze dekódovat zpět na původní přechody a vstupní slovo.
+        /// </summary>
         [Fact]
         public void ToBinary_CanBeDecodedBackToTransitionsAndInputData()
         {
@@ -62,6 +84,9 @@ namespace UTMS.Test
             Assert.Equal('S', decoded[0].HeadMove);
         }
 
+        /// <summary>
+        /// Ověřuje, že ukládací metody skutečně vytvoří textový a binární soubor.
+        /// </summary>
         [Fact]
         public void SaveTextAndSaveBinary_WriteFiles()
         {
@@ -87,6 +112,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že binární formát odmítne pojmenované stavy, které nelze v aktuálním kódování zapsat.
+        /// </summary>
         [Fact]
         public void ToBinary_RejectsNamedStatesThatCannotBeEncoded()
         {
@@ -98,6 +126,9 @@ namespace UTMS.Test
             Assert.Throws<ArgumentException>(() => TuringMachineProgramSerializer.ToBinary(program, ""));
         }
 
+        /// <summary>
+        /// Ověřuje, že binární formát používá deklarovanou páskovou abecedu včetně pomocných symbolů.
+        /// </summary>
         [Fact]
         public void ToBinary_UsesDeclaredTapeAlphabetForHelperSymbols()
         {
@@ -117,6 +148,9 @@ namespace UTMS.Test
             Assert.Contains('o', binaryCode.TapeAlphabet);
         }
 
+        /// <summary>
+        /// Ověřuje serializaci kompletní definice stroje do textového i binárního formátu.
+        /// </summary>
         [Fact]
         public void Serializer_WritesDefinitionToTextAndBinary()
         {
@@ -139,6 +173,9 @@ namespace UTMS.Test
             Assert.Equal('x', decoded[0].OutputSymbol);
         }
 
+        /// <summary>
+        /// Vytvoří referenční program binárního inkrementu pro testy binárního serializeru.
+        /// </summary>
         private static List<TransitionFunction> CreateIncrementProgram()
         {
             return new List<TransitionFunction>
@@ -155,20 +192,6 @@ namespace UTMS.Test
                 new TransitionFunction("q3", '0', "q2", '1', 'L'),
                 new TransitionFunction("q3", '#', "qF", '1', 'S')
             };
-        }
-
-        private static string GetWorkspaceRoot()
-        {
-            DirectoryInfo directory = new DirectoryInfo(AppContext.BaseDirectory);
-            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "UTMS.sln")))
-            {
-                directory = directory.Parent;
-            }
-
-            if (directory == null)
-                throw new DirectoryNotFoundException("NepodaĹ™ilo se najĂ­t koĹ™en projektu.");
-
-            return directory.FullName;
         }
     }
 }

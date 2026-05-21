@@ -11,8 +11,9 @@
 
   <ItemGroup>
     <Compile Include="BinaryCodeTest.cs" />
-    <Compile Include="DemoProgramTest.cs" />
+    <Compile Include="TuringMachineTaskTest.cs" />
     <Compile Include="TuringMachineDefinitionLoaderTest.cs" />
+    <Compile Include="TuringMachineGraphExporterTest.cs" />
     <Compile Include="TapeTest.cs" />
     <Compile Include="TuringSimulatorTest.cs" />
     <Compile Include="TuringMachineProgramTest.cs" />

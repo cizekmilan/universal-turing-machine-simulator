@@ -1,20 +1,22 @@
-using System;
-using System.IO;
-using TuringMachineSimulator;
+﻿using System;
+using UTMS.Core;
 using Xunit;
 
-namespace UTMS.Test
+namespace UTMS.Tests
 {
     /// <summary>
     /// Testy dekódování binárního zápisu Turingova stroje.
     /// </summary>
     public class BinaryCodeTest
     {
+        /// <summary>
+        /// Ověřuje, že platný binární program lze dekódovat na přechody a vstupní slovo.
+        /// </summary>
         [Fact]
         public void MakeTextInstructions_DecodesValidBinaryProgram()
         {
             string errorMessage = "";
-            string validIncrementProgram = File.ReadAllText(Path.Combine(GetWorkspaceRoot(), "demos", "bin_increment.btm")).Trim();
+            string validIncrementProgram = TuringMachineProgramSerializer.ToBinary(CreateIncrementProgram(), "1011");
             BinaryCode code = new BinaryCode(validIncrementProgram);
 
             var instructions = code.MakeTextInstructions(ref errorMessage);
@@ -42,6 +44,9 @@ namespace UTMS.Test
             Assert.Equal('S', instructions[10].HeadMove);
         }
 
+        /// <summary>
+        /// Ověřuje, že poškozený nebo neúplný binární zápis skončí chybou místo částečného dekódování.
+        /// </summary>
         [Theory]
         [InlineData("11101010")]
         [InlineData("11110100101001001101010101001101000100100010110010100010010110010010000101011000100100100101100010100010101100010001000001000100110000100100001010110000100100010010110000100010000010010001111011")]
@@ -57,6 +62,9 @@ namespace UTMS.Test
             Assert.NotEqual("", errorMessage);
         }
 
+        /// <summary>
+        /// Ověřuje, že null hodnota binárního programu vrátí chybu a nevyhodí výjimku.
+        /// </summary>
         [Fact]
         public void MakeTextInstructions_RejectsNullBinaryProgramWithoutThrowing()
         {
@@ -67,18 +75,25 @@ namespace UTMS.Test
             Assert.NotEqual("", errorMessage);
         }
 
-        private static string GetWorkspaceRoot()
+        /// <summary>
+        /// Vytvoří malý program binárního inkrementu používaný jako platný vstup pro binární enkodér.
+        /// </summary>
+        private static TransitionFunction[] CreateIncrementProgram()
         {
-            DirectoryInfo directory = new DirectoryInfo(AppContext.BaseDirectory);
-            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "UTMS.sln")))
+            return new TransitionFunction[]
             {
-                directory = directory.Parent;
-            }
-
-            if (directory == null)
-                throw new DirectoryNotFoundException("Nepodařilo se najít kořen projektu.");
-
-            return directory.FullName;
+                new TransitionFunction("q0", '1', "q0", '1', 'R'),
+                new TransitionFunction("q0", '0', "q0", '0', 'R'),
+                new TransitionFunction("q0", '#', "q1", '#', 'L'),
+                new TransitionFunction("q1", '0', "q2", '1', 'L'),
+                new TransitionFunction("q1", '1', "q3", '0', 'L'),
+                new TransitionFunction("q2", '1', "q2", '1', 'L'),
+                new TransitionFunction("q2", '0', "q2", '0', 'L'),
+                new TransitionFunction("q2", '#', "qF", '#', 'R'),
+                new TransitionFunction("q3", '1', "q3", '0', 'L'),
+                new TransitionFunction("q3", '0', "q2", '1', 'L'),
+                new TransitionFunction("q3", '#', "qF", '1', 'S')
+            };
         }
     }
 }

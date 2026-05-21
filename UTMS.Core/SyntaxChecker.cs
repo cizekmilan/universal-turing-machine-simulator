@@ -1,4 +1,4 @@
-﻿namespace TuringMachineSimulator
+﻿namespace UTMS.Core
 {
     /// <summary>
     /// Kontroluje syntaxi textových instrukcí ve tvaru (q0, 1) = (q1, 0, L).
@@ -84,6 +84,9 @@
             return false;
         }
 
+        /// <summary>
+        /// Vyjme obsah závorek a ověří, že závorky obalují celou část instrukce.
+        /// </summary>
         private static bool TryGetTupleContent(string expression, ref string description, out string content)
         {
             content = "";

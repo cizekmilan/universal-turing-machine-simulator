@@ -1,15 +1,18 @@
 ﻿using System;
 using System.IO;
-using TuringMachineSimulator;
+using UTMS.Core;
 using Xunit;
 
-namespace UTMS.Test
+namespace UTMS.Tests
 {
     /// <summary>
     /// Testy čisté simulační logiky bez závislosti na GUI.
     /// </summary>
     public class TuringSimulatorTest
     {
+        /// <summary>
+        /// Ověřuje, že jeden krok najde odpovídající přechod, upraví pásku a vyvolá runtime události bez vazby na GUI.
+        /// </summary>
         [Fact]
         public void Step_AppliesMatchingTransitionWithoutGraphics()
         {
@@ -46,6 +49,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že automatický běh pokračuje až do koncového stavu a vrátí souhrn provedených kroků.
+        /// </summary>
         [Fact]
         public void Run_ExecutesLoadedProgramUntilFinalState()
         {
@@ -73,6 +79,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že vstupní data ze souboru jsou zapsána na pásku i bez odběratele události načtení vstupu.
+        /// </summary>
         [Fact]
         public void LoadProgram_WritesInputDataToTapeWithoutExternalSubscriber()
         {
@@ -94,6 +103,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že loader při načtení souboru vyvolá událost s nalezeným vstupním slovem.
+        /// </summary>
         [Fact]
         public void LoadProgram_RaisesInputDataLoadedWhenFileContainsInput()
         {
@@ -117,6 +129,9 @@ namespace UTMS.Test
             }
         }
 
+        /// <summary>
+        /// Ověřuje, že simulátor umí načíst formální definici přímo z paměti bez souboru.
+        /// </summary>
         [Fact]
         public void LoadProgram_LoadsDefinitionWithoutFile()
         {
@@ -138,6 +153,9 @@ namespace UTMS.Test
             Assert.Contains("Koncovy stav.", summary);
         }
 
+        /// <summary>
+        /// Ověřuje, že simulátor použije blank symbol z načtené definice stroje.
+        /// </summary>
         [Fact]
         public void LoadProgram_UsesDefinitionBlankSymbol()
         {
@@ -161,6 +179,9 @@ namespace UTMS.Test
             Assert.Equal("qF", simulator.Machine.CurrentState());
         }
 
+        /// <summary>
+        /// Ověřuje, že chybějící přechod zastaví běh jako neznámý stav a zapíše důvod do souhrnu.
+        /// </summary>
         [Fact]
         public void Run_ReturnsUnknownStateSummaryWhenTransitionIsMissing()
         {

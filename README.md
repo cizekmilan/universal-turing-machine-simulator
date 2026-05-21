@@ -4,28 +4,61 @@
 
 ## 🎯 Overview
 
-UTMS is a desktop study project for loading, running, inspecting, and exporting Turing machine programs.
+UTMS is a Windows desktop study project for loading, editing, running, inspecting, and exporting deterministic single-tape Turing machine programs.
 
 A Turing machine is a formal model of computation consisting of states, an input/output tape, a tape head, and transition rules. Despite its simplicity, it is computationally equivalent to modern general-purpose programming languages in terms of what can be computed.
 
-The current implementation focuses on a deterministic single-tape simulator. It supports a readable text format (`.tm`) and a binary encoded format (`.btm`) for machine definitions. The codebase is intentionally split into a reusable simulation core, a WinForms user interface, and xUnit tests for the non-UI logic.
-
-The long-term direction is to grow the project into a richer Universal Turing Machine Simulator environment with an editable transition table, better visualization, and graph export.
+The application focuses on a clear educational workflow: open a machine definition, inspect its transition table, change the input word, run the simulation automatically or step by step, and observe how the head, tape, states, and transitions evolve. The codebase is split into a reusable simulation core, a WinForms user interface, and xUnit tests for the non-UI logic.
 
 ## ✨ Features
 
 Current functionality:
 
-- single-tape Turing machine simulation
-- step-by-step and continuous execution
-- configurable input data loaded from machine files
-- text machine definition format (`.tm`)
-- binary encoded machine definition format (`.btm`)
-- input alphabet and tape alphabet declarations in `.tm` files
-- custom blank symbols loaded from machine definitions
-- `.btm` format preserving alphabet metadata
-- demo machines for common binary operations
-- xUnit tests covering core logic, parsers, serializers, and demos
+- deterministic single-tape Turing machine simulation
+- two supported machine formats: readable `.tm` files for editing and encoded `.btm` files for formal binary representation
+- input alphabet, tape alphabet, blank symbol, transition rules, and input word loaded from files
+- validation of input data against the formal input alphabet
+- automatic execution with discrete speed levels
+- pause/continue workflow for switching from automatic execution to manual control
+- step-by-step execution for inspecting individual transitions
+- visual tape with current state, head position, read symbol, step count, status, and last transition
+- mouse drag support for moving the visible tape area
+- two tape view modes: moving head over tape or tape following the head
+- editable input word and blank symbol before execution
+- read-only display of the current input alphabet and tape alphabet
+- GUI transition editor for changing machine definitions
+- Graphviz DOT export of state graphs
+- demo machines for common binary tasks
+
+## 🧵 Tape Visualization
+
+The tape panel displays:
+
+- tape cells and their indexes
+- the current head position
+- the current machine state under the head
+- blank symbols in a lighter style
+- the last written cell with a short highlight
+- automatic viewport adjustment when the head approaches an edge
+- manual horizontal tape movement by dragging with the mouse
+
+The status row above the tape shows the current state, head index, read symbol, step count, simulation status, and last executed transition.
+
+## 🧮 Transition Editor
+
+The transition editor allows transition rules to be edited in a grid:
+
+| Column | Meaning |
+| --- | --- |
+| `Current state` | State before the transition |
+| `Read` | Symbol read from the tape |
+| `Next state` | State after the transition |
+| `Write` | Symbol written to the tape |
+| `Move` | Head movement: `L`, `R`, or `S` |
+
+The state and symbol columns use dropdowns. The editor also supports creating a new state or a new tape symbol from the dropdown. It validates incomplete rows, invalid symbols, invalid head movements, and duplicate transitions for the same `(state, read symbol)` pair before changes can be accepted.
+
+The main form also opens this editor on double-click in the runtime transition list and selects the corresponding transition row.
 
 ## 🧩 Demo Machines
 
@@ -37,6 +70,8 @@ Demo files are stored in `demos/`.
 | `bin_decrement.tm` / `bin_decrement.btm` | Subtracts `1` from a binary number while preserving input width |
 | `bin_bitwise_not.tm` / `bin_bitwise_not.btm` | Flips all bits in a binary number |
 | `bin_mirroring.tm` / `bin_mirroring.btm` | Appends a reversed copy of the binary input |
+| `binary_shift_left.tm` / `binary_shift_left.btm` | Appends a zero bit to the right side of a binary number |
+| `palindrome_check.tm` / `palindrome_check.btm` | Checks whether the binary input is a palindrome and leaves `1` or `0` as the result |
 
 ## 📝 Text Machine Format
 
@@ -63,10 +98,10 @@ Supported declarations:
 
 | Declaration | Meaning |
 | --- | --- |
-| `alphabet = {0,1}` | input alphabet |
-| `tapeAlphabet = {0,1,#,x}` | full tape alphabet, including blank and helper symbols |
-| `blank = #` | blank tape symbol |
-| `w = 1011` | input written to the tape before simulation |
+| `alphabet = {0,1}` | Input alphabet: symbols allowed in the input word |
+| `tapeAlphabet = {0,1,#,x}` | Full tape alphabet, including input symbols, blank, and helper symbols |
+| `blank = #` | Blank tape symbol |
+| `w = 1011` | Input word written to the tape before simulation |
 
 Transition syntax:
 
@@ -78,46 +113,90 @@ Supported head moves:
 
 | Symbol | Meaning |
 | --- | --- |
-| `L` | move left |
-| `R` | move right |
-| `S` | stay / stop move |
+| `L` | Move left |
+| `R` | Move right |
+| `S` | Stay on the current cell |
+
+Notes:
+
+- Lines starting with `//` are treated as comments.
+- Each alphabet symbol is a single character.
+- The blank symbol must be part of the tape alphabet.
+- The blank symbol must not be part of the input alphabet.
+- Every input alphabet symbol must also be part of the tape alphabet.
+- Helper symbols such as `x`, `y`, `o`, or `i` belong to the tape alphabet, not necessarily to the input alphabet.
+- For deterministic machines, only one transition may exist for the same `(state, read symbol)` pair.
 
 ## 🔢 Binary Machine Format
 
-The `.btm` format stores an encoded machine definition with input alphabet, tape alphabet, blank symbol, transitions, and input data.
+The `.btm` format stores an encoded machine definition with:
 
-When a `.tm` file is exported to `.btm`, user-defined state names are encoded by position and are restored as canonical names such as `q0`, `q1`, and `qF` after loading. This is intentional: the binary format is primarily a formal encoded representation, while `.tm` remains the user-friendly editable format.
+- input alphabet
+- tape alphabet
+- blank symbol
+- transition rules
+- input data
+
+The binary format starts with the current metadata-aware prefix and is intended mainly as a formal encoded representation. The `.tm` format remains the preferred human-editable format.
+
+When a `.tm` file is exported to `.btm`, state names are encoded by position. After loading a `.btm` file, states are restored as canonical names such as `q0`, `q1`, and `qF`. This is intentional for the binary representation.
+
+## 📈 Graph Export
+
+`Tools -> Export graph...` writes the current machine as a Graphviz DOT file.
+
+The exported graph contains:
+
+- an initial point node leading to `q0`
+- all states found in the transition table
+- `qF` rendered as a double-circle state
+- directed transition edges
+- edge labels in the form `(read,write,move)`, for example `(0,1,R)`
+
+The menu item is enabled only when a loaded machine contains at least one transition.
 
 ## 🗂️ Project Structure
 
 ```text
 /
-+-- demos/                 # Example .tm and .btm machine definitions
++-- demos/                     # Example .tm and .btm machine definitions
 |
-+-- UTMS.Core/             # Simulation core and file formats
++-- UTMS.Core/                 # Simulation core and file formats
 |   +-- BinaryCode.cs
 |   +-- SyntaxChecker.cs
 |   +-- TuringMachine.cs
 |   +-- TuringMachineDefinition.cs
 |   +-- TuringMachineDefinitionLoader.cs
+|   +-- TuringMachineGraphExporter.cs
 |   +-- TuringMachineProgram.cs
 |   +-- TuringMachineProgramSerializer.cs
-|   +-- TuringMachineSimulator.cs
+|   +-- TuringSimulator.cs
 |   +-- Properties/
 |
-+-- UTMS.WinForms/         # Windows Forms user interface
++-- UTMS.WinForms/             # Windows Forms user interface
+|   +-- Assets/
+|   |   +-- machine_stop.wav
+|   |   +-- tape_tick.wav
 |   +-- MainForm.cs
 |   +-- MainForm.Designer.cs
+|   +-- PromptDialog.cs
+|   +-- PromptDialog.Designer.cs
+|   +-- SimulationVisualState.cs
+|   +-- SoundEffectPlayer.cs
+|   +-- TapeRenderer.cs
+|   +-- TransitionEditorForm.cs
+|   +-- TransitionEditorForm.Designer.cs
 |   +-- Program.cs
 |   +-- Properties/
 |
-+-- UTMS.Tests/            # xUnit tests for non-UI logic
++-- UTMS.Tests/                # xUnit tests for non-UI logic
 |   +-- BinaryCodeTest.cs
-|   +-- DemoProgramTest.cs
 |   +-- TapeTest.cs
 |   +-- TuringMachineDefinitionLoaderTest.cs
+|   +-- TuringMachineGraphExporterTest.cs
 |   +-- TuringMachineProgramSerializerTest.cs
 |   +-- TuringMachineProgramTest.cs
+|   +-- TuringMachineTaskTest.cs
 |   +-- TuringSimulatorTest.cs
 |
 +-- UTMS.sln
@@ -156,7 +235,7 @@ Run all tests:
 dotnet test UTMS.sln
 ```
 
-The test suite currently covers:
+The test suite covers:
 
 - tape behavior
 - transition lookup
@@ -164,28 +243,31 @@ The test suite currently covers:
 - text machine loading
 - binary machine decoding
 - machine definition validation
+- duplicate transition validation
 - text and binary serialization
-- demo machine loading and execution
+- Graphviz DOT graph export
+- concrete machine tasks defined directly in tests
 
 ## ⚠️ Current Limitations
 
 Known limitations:
 
 - the simulator currently supports a single tape
-- GUI editing of transition tables is not implemented yet
-- graph visualization/export is not implemented yet
+- graph export currently writes DOT text, not rendered image files
+- the transition editor is functional, but still intentionally simple
 - `.btm` is useful as a formal encoded format, but `.tm` is the preferred human-editable format
 
 ## 🛣️ Roadmap
 
 Planned direction:
 
-- transition table editor in the GUI
-- export current GUI machine state to `.tm` and `.btm`
+- richer transition editor workflow
 - stronger validation and editor feedback
-- visual representation of states and transitions
-- optional transition graph export, for example to DOT/Graphviz or PNG
 - visual redesign of the WinForms interface
+- optional rendered graph export through Graphviz
+- visual representation of states and transitions inside the application
+- broader demo set, including non-binary alphabets
+- future exploration of a real universal Turing machine definition
 
 ## Status
 
@@ -196,6 +278,8 @@ Current status:
 - ✅ MSTest was replaced by xUnit
 - ✅ demo programs are available in both supported formats
 - ✅ build and test suite currently pass on .NET 10
+- ✅ `.tm` and `.btm` can be opened and saved from the GUI
+- ✅ DOT graph export is available from the GUI
 
 ## License
 

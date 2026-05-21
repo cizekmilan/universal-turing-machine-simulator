@@ -1,5 +1,3 @@
-// Úloha: Přičte 1 k binárnímu číslu.
-
 alphabet = {0,1}
 tapeAlphabet = {0,1,#}
 blank = #
@@ -15,5 +13,4 @@ blank = #
 (q3, 1) = (q3, 0, L)
 (q3, 0) = (q2, 1, L)
 (q3, #) = (qF, 1, S)
-
 w = 1011

@@ -1,4 +1,4 @@
-﻿namespace TuringMachineSimulator
+﻿namespace UTMS.WinForms
 {
     partial class MainForm
     {
@@ -28,287 +28,636 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.txtSummary = new System.Windows.Forms.RichTextBox();
-            this.lblTape = new System.Windows.Forms.Label();
-            this.txtProgramFile = new System.Windows.Forms.TextBox();
-            this.lblProgramFile = new System.Windows.Forms.Label();
-            this.btnRunMachine = new System.Windows.Forms.Button();
-            this.txtInputData = new System.Windows.Forms.TextBox();
-            this.lblInputData = new System.Windows.Forms.Label();
-            this.panelTapeCanvas = new System.Windows.Forms.Panel();
-            this.lblSummary = new System.Windows.Forms.Label();
-            this.openProgramDialog = new System.Windows.Forms.OpenFileDialog();
-            this.btnBrowseProgram = new System.Windows.Forms.Button();
-            this.lblSimulationSpeed = new System.Windows.Forms.Label();
-            this.trackSimulationDelay = new System.Windows.Forms.TrackBar();
-            this.lblSlower = new System.Windows.Forms.Label();
-            this.lblFaster = new System.Windows.Forms.Label();
-            this.listProgramTransitions = new System.Windows.Forms.ListView();
-            this.colInputState = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colInputSymbol = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colOutputState = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colOutputSymbol = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colHeadMove = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.btnStepMachine = new System.Windows.Forms.Button();
-            this.btnSetInputData = new System.Windows.Forms.Button();
-            this.btnResetMachine = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.trackSimulationDelay)).BeginInit();
-            this.SuspendLayout();
+            txtSummary = new System.Windows.Forms.RichTextBox();
+            lblTape = new System.Windows.Forms.Label();
+            txtProgramFile = new System.Windows.Forms.TextBox();
+            lblProgramFile = new System.Windows.Forms.Label();
+            txtInputAlphabet = new System.Windows.Forms.TextBox();
+            lblInputAlphabet = new System.Windows.Forms.Label();
+            txtTapeAlphabet = new System.Windows.Forms.TextBox();
+            lblTapeAlphabet = new System.Windows.Forms.Label();
+            txtBlankSymbol = new System.Windows.Forms.TextBox();
+            lblBlankSymbol = new System.Windows.Forms.Label();
+            grpMachineDefinition = new System.Windows.Forms.GroupBox();
+            txtInputData = new System.Windows.Forms.TextBox();
+            lblInputData = new System.Windows.Forms.Label();
+            btnSetInputData = new System.Windows.Forms.Button();
+            btnRunMachine = new System.Windows.Forms.Button();
+            panelSimulationStatus = new System.Windows.Forms.Panel();
+            lblMachineStateStatus = new System.Windows.Forms.Label();
+            lblHeadStatus = new System.Windows.Forms.Label();
+            lblReadStatus = new System.Windows.Forms.Label();
+            lblStepStatus = new System.Windows.Forms.Label();
+            lblRunStatus = new System.Windows.Forms.Label();
+            lblLastTransitionStatus = new System.Windows.Forms.Label();
+            panelTapeCanvas = new System.Windows.Forms.Panel();
+            lblSummary = new System.Windows.Forms.Label();
+            openProgramDialog = new System.Windows.Forms.OpenFileDialog();
+            saveProgramDialog = new System.Windows.Forms.SaveFileDialog();
+            saveGraphDialog = new System.Windows.Forms.SaveFileDialog();
+            lblSimulationSpeed = new System.Windows.Forms.Label();
+            trackSimulationDelay = new System.Windows.Forms.TrackBar();
+            lblSlower = new System.Windows.Forms.Label();
+            lblFaster = new System.Windows.Forms.Label();
+            listProgramTransitions = new System.Windows.Forms.ListView();
+            colInputState = new System.Windows.Forms.ColumnHeader();
+            colInputSymbol = new System.Windows.Forms.ColumnHeader();
+            colOutputState = new System.Windows.Forms.ColumnHeader();
+            colOutputSymbol = new System.Windows.Forms.ColumnHeader();
+            colHeadMove = new System.Windows.Forms.ColumnHeader();
+            btnStepMachine = new System.Windows.Forms.Button();
+            btnPauseMachine = new System.Windows.Forms.Button();
+            btnResetMachine = new System.Windows.Forms.Button();
+            mainMenu = new System.Windows.Forms.MenuStrip();
+            menuFile = new System.Windows.Forms.ToolStripMenuItem();
+            menuOpenProgram = new System.Windows.Forms.ToolStripMenuItem();
+            menuSaveProgram = new System.Windows.Forms.ToolStripMenuItem();
+            menuSaveProgramAs = new System.Windows.Forms.ToolStripMenuItem();
+            menuView = new System.Windows.Forms.ToolStripMenuItem();
+            menuHeadMovesOverTape = new System.Windows.Forms.ToolStripMenuItem();
+            menuTapeFollowsHead = new System.Windows.Forms.ToolStripMenuItem();
+            menuSoundEffects = new System.Windows.Forms.ToolStripMenuItem();
+            menuTools = new System.Windows.Forms.ToolStripMenuItem();
+            menuEditTransitions = new System.Windows.Forms.ToolStripMenuItem();
+            menuExportGraph = new System.Windows.Forms.ToolStripMenuItem();
+            simulationTimer = new System.Windows.Forms.Timer(components);
+            grpMachineDefinition.SuspendLayout();
+            panelSimulationStatus.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trackSimulationDelay).BeginInit();
+            mainMenu.SuspendLayout();
+            SuspendLayout();
             // 
             // txtSummary
             // 
-            this.txtSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSummary.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.txtSummary.Location = new System.Drawing.Point(12, 490);
-            this.txtSummary.Name = "txtSummary";
-            this.txtSummary.ReadOnly = true;
-            this.txtSummary.Size = new System.Drawing.Size(697, 90);
-            this.txtSummary.TabIndex = 2;
-            this.txtSummary.Text = "";
+            txtSummary.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtSummary.BackColor = System.Drawing.SystemColors.InactiveBorder;
+            txtSummary.Location = new System.Drawing.Point(14, 621);
+            txtSummary.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtSummary.Name = "txtSummary";
+            txtSummary.ReadOnly = true;
+            txtSummary.Size = new System.Drawing.Size(812, 103);
+            txtSummary.TabIndex = 2;
+            txtSummary.Text = "";
             // 
             // lblTape
             // 
-            this.lblTape.AutoSize = true;
-            this.lblTape.Location = new System.Drawing.Point(12, 231);
-            this.lblTape.Name = "lblTape";
-            this.lblTape.Size = new System.Drawing.Size(75, 13);
-            this.lblTape.TabIndex = 3;
-            this.lblTape.Text = "Machine tape:";
+            lblTape.AutoSize = true;
+            lblTape.Location = new System.Drawing.Point(14, 322);
+            lblTape.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblTape.Name = "lblTape";
+            lblTape.Size = new System.Drawing.Size(82, 15);
+            lblTape.TabIndex = 3;
+            lblTape.Text = "Machine tape:";
             // 
             // txtProgramFile
             // 
-            this.txtProgramFile.Location = new System.Drawing.Point(95, 71);
-            this.txtProgramFile.Name = "txtProgramFile";
-            this.txtProgramFile.Size = new System.Drawing.Size(256, 20);
-            this.txtProgramFile.TabIndex = 4;
+            txtProgramFile.Location = new System.Drawing.Point(111, 93);
+            txtProgramFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtProgramFile.Name = "txtProgramFile";
+            txtProgramFile.ReadOnly = true;
+            txtProgramFile.Size = new System.Drawing.Size(298, 23);
+            txtProgramFile.TabIndex = 4;
             // 
             // lblProgramFile
             // 
-            this.lblProgramFile.AutoSize = true;
-            this.lblProgramFile.Location = new System.Drawing.Point(12, 74);
-            this.lblProgramFile.Name = "lblProgramFile";
-            this.lblProgramFile.Size = new System.Drawing.Size(71, 13);
-            this.lblProgramFile.TabIndex = 5;
-            this.lblProgramFile.Text = "Program file:";
+            lblProgramFile.AutoSize = true;
+            lblProgramFile.Location = new System.Drawing.Point(14, 96);
+            lblProgramFile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblProgramFile.Name = "lblProgramFile";
+            lblProgramFile.Size = new System.Drawing.Size(75, 15);
+            lblProgramFile.TabIndex = 5;
+            lblProgramFile.Text = "Program file:";
             // 
-            // btnRunMachine
+            // txtInputAlphabet
             // 
-            this.btnRunMachine.BackColor = System.Drawing.SystemColors.Control;
-            this.btnRunMachine.Enabled = false;
-            this.btnRunMachine.Location = new System.Drawing.Point(161, 191);
-            this.btnRunMachine.Name = "btnRunMachine";
-            this.btnRunMachine.Size = new System.Drawing.Size(239, 39);
-            this.btnRunMachine.TabIndex = 6;
-            this.btnRunMachine.Text = "Run Turing machine";
-            this.btnRunMachine.UseVisualStyleBackColor = false;
-            this.btnRunMachine.Click += new System.EventHandler(this.btnRunMachine_Click);
+            txtInputAlphabet.Location = new System.Drawing.Point(97, 25);
+            txtInputAlphabet.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtInputAlphabet.Name = "txtInputAlphabet";
+            txtInputAlphabet.ReadOnly = true;
+            txtInputAlphabet.Size = new System.Drawing.Size(100, 23);
+            txtInputAlphabet.TabIndex = 21;
+            // 
+            // lblInputAlphabet
+            // 
+            lblInputAlphabet.AutoSize = true;
+            lblInputAlphabet.Location = new System.Drawing.Point(10, 29);
+            lblInputAlphabet.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblInputAlphabet.Name = "lblInputAlphabet";
+            lblInputAlphabet.Size = new System.Drawing.Size(87, 15);
+            lblInputAlphabet.TabIndex = 22;
+            lblInputAlphabet.Text = "Input alphabet:";
+            // 
+            // txtTapeAlphabet
+            // 
+            txtTapeAlphabet.Location = new System.Drawing.Point(307, 25);
+            txtTapeAlphabet.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtTapeAlphabet.Name = "txtTapeAlphabet";
+            txtTapeAlphabet.ReadOnly = true;
+            txtTapeAlphabet.Size = new System.Drawing.Size(137, 23);
+            txtTapeAlphabet.TabIndex = 23;
+            // 
+            // lblTapeAlphabet
+            // 
+            lblTapeAlphabet.AutoSize = true;
+            lblTapeAlphabet.Location = new System.Drawing.Point(204, 29);
+            lblTapeAlphabet.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblTapeAlphabet.Name = "lblTapeAlphabet";
+            lblTapeAlphabet.Size = new System.Drawing.Size(83, 15);
+            lblTapeAlphabet.TabIndex = 24;
+            lblTapeAlphabet.Text = "Tape alphabet:";
+            // 
+            // txtBlankSymbol
+            // 
+            txtBlankSymbol.Location = new System.Drawing.Point(97, 54);
+            txtBlankSymbol.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtBlankSymbol.MaxLength = 1;
+            txtBlankSymbol.Name = "txtBlankSymbol";
+            txtBlankSymbol.Size = new System.Drawing.Size(46, 23);
+            txtBlankSymbol.TabIndex = 25;
+            txtBlankSymbol.TextChanged += MachineDefinitionField_TextChanged;
+            // 
+            // lblBlankSymbol
+            // 
+            lblBlankSymbol.AutoSize = true;
+            lblBlankSymbol.Location = new System.Drawing.Point(10, 57);
+            lblBlankSymbol.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblBlankSymbol.Name = "lblBlankSymbol";
+            lblBlankSymbol.Size = new System.Drawing.Size(81, 15);
+            lblBlankSymbol.TabIndex = 26;
+            lblBlankSymbol.Text = "Blank symbol:";
+            // 
+            // grpMachineDefinition
+            // 
+            grpMachineDefinition.Controls.Add(txtInputData);
+            grpMachineDefinition.Controls.Add(lblInputData);
+            grpMachineDefinition.Controls.Add(txtInputAlphabet);
+            grpMachineDefinition.Controls.Add(lblInputAlphabet);
+            grpMachineDefinition.Controls.Add(txtTapeAlphabet);
+            grpMachineDefinition.Controls.Add(lblTapeAlphabet);
+            grpMachineDefinition.Controls.Add(txtBlankSymbol);
+            grpMachineDefinition.Controls.Add(lblBlankSymbol);
+            grpMachineDefinition.Controls.Add(btnSetInputData);
+            grpMachineDefinition.Location = new System.Drawing.Point(14, 122);
+            grpMachineDefinition.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            grpMachineDefinition.Name = "grpMachineDefinition";
+            grpMachineDefinition.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            grpMachineDefinition.Size = new System.Drawing.Size(453, 147);
+            grpMachineDefinition.TabIndex = 27;
+            grpMachineDefinition.TabStop = false;
+            grpMachineDefinition.Text = "Machine definition";
             // 
             // txtInputData
             // 
-            this.txtInputData.Location = new System.Drawing.Point(15, 127);
-            this.txtInputData.Name = "txtInputData";
-            this.txtInputData.Size = new System.Drawing.Size(297, 20);
-            this.txtInputData.TabIndex = 7;
+            txtInputData.Location = new System.Drawing.Point(8, 109);
+            txtInputData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtInputData.Name = "txtInputData";
+            txtInputData.Size = new System.Drawing.Size(346, 23);
+            txtInputData.TabIndex = 7;
+            txtInputData.TextChanged += MachineDefinitionField_TextChanged;
             // 
             // lblInputData
             // 
-            this.lblInputData.AutoSize = true;
-            this.lblInputData.Location = new System.Drawing.Point(12, 111);
-            this.lblInputData.Name = "lblInputData";
-            this.lblInputData.Size = new System.Drawing.Size(204, 13);
-            this.lblInputData.TabIndex = 8;
-            this.lblInputData.Text = "Input data on tape (blank symbol is #):";
-            // 
-            // panelTapeCanvas
-            // 
-            this.panelTapeCanvas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelTapeCanvas.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panelTapeCanvas.Location = new System.Drawing.Point(12, 247);
-            this.panelTapeCanvas.Name = "panelTapeCanvas";
-            this.panelTapeCanvas.Size = new System.Drawing.Size(697, 209);
-            this.panelTapeCanvas.TabIndex = 9;
-            this.panelTapeCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTapeCanvas_Paint);
-            // 
-            // lblSummary
-            // 
-            this.lblSummary.AutoSize = true;
-            this.lblSummary.Location = new System.Drawing.Point(12, 474);
-            this.lblSummary.Name = "lblSummary";
-            this.lblSummary.Size = new System.Drawing.Size(53, 13);
-            this.lblSummary.TabIndex = 10;
-            this.lblSummary.Text = "Summary:";
-            // 
-            // openProgramDialog
-            // 
-            this.openProgramDialog.FileName = "openProgramDialog";
-            this.openProgramDialog.Filter = "Turing machine program|*.TM|Binary machine program|*.BTM";
-            // 
-            // btnBrowseProgram
-            // 
-            this.btnBrowseProgram.Location = new System.Drawing.Point(357, 71);
-            this.btnBrowseProgram.Name = "btnBrowseProgram";
-            this.btnBrowseProgram.Size = new System.Drawing.Size(36, 21);
-            this.btnBrowseProgram.TabIndex = 11;
-            this.btnBrowseProgram.Text = "....";
-            this.btnBrowseProgram.UseVisualStyleBackColor = true;
-            this.btnBrowseProgram.Click += new System.EventHandler(this.btnBrowseProgram_Click);
-            // 
-            // lblSimulationSpeed
-            // 
-            this.lblSimulationSpeed.AutoSize = true;
-            this.lblSimulationSpeed.Location = new System.Drawing.Point(12, 19);
-            this.lblSimulationSpeed.Name = "lblSimulationSpeed";
-            this.lblSimulationSpeed.Size = new System.Drawing.Size(91, 13);
-            this.lblSimulationSpeed.TabIndex = 12;
-            this.lblSimulationSpeed.Text = "Simulation speed:";
-            // 
-            // trackSimulationDelay
-            // 
-            this.trackSimulationDelay.Location = new System.Drawing.Point(193, 12);
-            this.trackSimulationDelay.Maximum = 3000;
-            this.trackSimulationDelay.Minimum = 100;
-            this.trackSimulationDelay.Name = "trackSimulationDelay";
-            this.trackSimulationDelay.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.trackSimulationDelay.Size = new System.Drawing.Size(148, 45);
-            this.trackSimulationDelay.SmallChange = 100;
-            this.trackSimulationDelay.TabIndex = 13;
-            this.trackSimulationDelay.TickFrequency = 500;
-            this.trackSimulationDelay.Value = 1000;
-            // 
-            // lblSlower
-            // 
-            this.lblSlower.AutoSize = true;
-            this.lblSlower.Location = new System.Drawing.Point(135, 19);
-            this.lblSlower.Name = "lblSlower";
-            this.lblSlower.Size = new System.Drawing.Size(38, 13);
-            this.lblSlower.TabIndex = 14;
-            this.lblSlower.Text = "slower";
-            // 
-            // lblFaster
-            // 
-            this.lblFaster.AutoSize = true;
-            this.lblFaster.Location = new System.Drawing.Point(347, 19);
-            this.lblFaster.Name = "lblFaster";
-            this.lblFaster.Size = new System.Drawing.Size(34, 13);
-            this.lblFaster.TabIndex = 15;
-            this.lblFaster.Text = "faster";
-            // 
-            // listProgramTransitions
-            // 
-            this.listProgramTransitions.AutoArrange = false;
-            this.listProgramTransitions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colInputState,
-            this.colInputSymbol,
-            this.colOutputState,
-            this.colOutputSymbol,
-            this.colHeadMove});
-            this.listProgramTransitions.FullRowSelect = true;
-            this.listProgramTransitions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listProgramTransitions.HideSelection = false;
-            this.listProgramTransitions.Location = new System.Drawing.Point(412, 8);
-            this.listProgramTransitions.MultiSelect = false;
-            this.listProgramTransitions.Name = "listProgramTransitions";
-            this.listProgramTransitions.Size = new System.Drawing.Size(308, 166);
-            this.listProgramTransitions.TabIndex = 17;
-            this.listProgramTransitions.UseCompatibleStateImageBehavior = false;
-            this.listProgramTransitions.View = System.Windows.Forms.View.Details;
-            // 
-            // colInputState
-            // 
-            this.colInputState.Text = "Input state";
-            // 
-            // colInputSymbol
-            // 
-            this.colInputSymbol.Text = "Read";
-            this.colInputSymbol.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // colOutputState
-            // 
-            this.colOutputState.Text = "Output state";
-            this.colOutputState.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // colOutputSymbol
-            // 
-            this.colOutputSymbol.Text = "Write";
-            this.colOutputSymbol.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // colHeadMove
-            // 
-            this.colHeadMove.Text = "Head";
-            this.colHeadMove.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // btnStepMachine
-            // 
-            this.btnStepMachine.BackColor = System.Drawing.SystemColors.Control;
-            this.btnStepMachine.Enabled = false;
-            this.btnStepMachine.Location = new System.Drawing.Point(412, 191);
-            this.btnStepMachine.Name = "btnStepMachine";
-            this.btnStepMachine.Size = new System.Drawing.Size(79, 39);
-            this.btnStepMachine.TabIndex = 16;
-            this.btnStepMachine.Text = "Step";
-            this.btnStepMachine.UseVisualStyleBackColor = false;
-            this.btnStepMachine.Click += new System.EventHandler(this.btnStepMachine_Click);
+            lblInputData.AutoSize = true;
+            lblInputData.Location = new System.Drawing.Point(8, 91);
+            lblInputData.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblInputData.Name = "lblInputData";
+            lblInputData.Size = new System.Drawing.Size(107, 15);
+            lblInputData.TabIndex = 8;
+            lblInputData.Text = "Input data on tape:";
             // 
             // btnSetInputData
             // 
-            this.btnSetInputData.Enabled = false;
-            this.btnSetInputData.Location = new System.Drawing.Point(318, 127);
-            this.btnSetInputData.Name = "btnSetInputData";
-            this.btnSetInputData.Size = new System.Drawing.Size(75, 21);
-            this.btnSetInputData.TabIndex = 18;
-            this.btnSetInputData.Text = "Set";
-            this.btnSetInputData.UseVisualStyleBackColor = true;
-            this.btnSetInputData.Click += new System.EventHandler(this.btnSetInputData_Click);
+            btnSetInputData.Enabled = false;
+            btnSetInputData.Location = new System.Drawing.Point(358, 109);
+            btnSetInputData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSetInputData.Name = "btnSetInputData";
+            btnSetInputData.Size = new System.Drawing.Size(88, 24);
+            btnSetInputData.TabIndex = 18;
+            btnSetInputData.Text = "Set";
+            btnSetInputData.UseVisualStyleBackColor = true;
+            btnSetInputData.Click += btnSetInputData_Click;
+            // 
+            // btnRunMachine
+            // 
+            btnRunMachine.BackColor = System.Drawing.SystemColors.Control;
+            btnRunMachine.Enabled = false;
+            btnRunMachine.Location = new System.Drawing.Point(188, 276);
+            btnRunMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRunMachine.Name = "btnRunMachine";
+            btnRunMachine.Size = new System.Drawing.Size(175, 45);
+            btnRunMachine.TabIndex = 6;
+            btnRunMachine.Text = "Run Turing machine";
+            btnRunMachine.UseVisualStyleBackColor = false;
+            btnRunMachine.Click += btnRunMachine_Click;
+            // 
+            // panelSimulationStatus
+            // 
+            panelSimulationStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panelSimulationStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
+            panelSimulationStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panelSimulationStatus.Controls.Add(lblMachineStateStatus);
+            panelSimulationStatus.Controls.Add(lblHeadStatus);
+            panelSimulationStatus.Controls.Add(lblReadStatus);
+            panelSimulationStatus.Controls.Add(lblStepStatus);
+            panelSimulationStatus.Controls.Add(lblRunStatus);
+            panelSimulationStatus.Controls.Add(lblLastTransitionStatus);
+            panelSimulationStatus.Location = new System.Drawing.Point(14, 340);
+            panelSimulationStatus.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelSimulationStatus.Name = "panelSimulationStatus";
+            panelSimulationStatus.Size = new System.Drawing.Size(813, 58);
+            panelSimulationStatus.TabIndex = 29;
+            // 
+            // lblMachineStateStatus
+            // 
+            lblMachineStateStatus.BackColor = System.Drawing.Color.FromArgb(230, 241, 255);
+            lblMachineStateStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            lblMachineStateStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            lblMachineStateStatus.ForeColor = System.Drawing.Color.FromArgb(9, 105, 218);
+            lblMachineStateStatus.Location = new System.Drawing.Point(18, 14);
+            lblMachineStateStatus.Name = "lblMachineStateStatus";
+            lblMachineStateStatus.Padding = new System.Windows.Forms.Padding(8, 0, 0, 1);
+            lblMachineStateStatus.Size = new System.Drawing.Size(126, 30);
+            lblMachineStateStatus.TabIndex = 0;
+            lblMachineStateStatus.Text = "State";
+            lblMachineStateStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblHeadStatus
+            // 
+            lblHeadStatus.BackColor = System.Drawing.Color.FromArgb(255, 248, 197);
+            lblHeadStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            lblHeadStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            lblHeadStatus.ForeColor = System.Drawing.Color.FromArgb(154, 103, 0);
+            lblHeadStatus.Location = new System.Drawing.Point(154, 14);
+            lblHeadStatus.Name = "lblHeadStatus";
+            lblHeadStatus.Padding = new System.Windows.Forms.Padding(8, 0, 0, 1);
+            lblHeadStatus.Size = new System.Drawing.Size(102, 30);
+            lblHeadStatus.TabIndex = 1;
+            lblHeadStatus.Text = "Head";
+            lblHeadStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblReadStatus
+            // 
+            lblReadStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
+            lblReadStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            lblReadStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            lblReadStatus.ForeColor = System.Drawing.Color.FromArgb(87, 96, 106);
+            lblReadStatus.Location = new System.Drawing.Point(266, 14);
+            lblReadStatus.Name = "lblReadStatus";
+            lblReadStatus.Padding = new System.Windows.Forms.Padding(8, 0, 0, 1);
+            lblReadStatus.Size = new System.Drawing.Size(92, 30);
+            lblReadStatus.TabIndex = 2;
+            lblReadStatus.Text = "Read";
+            lblReadStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblStepStatus
+            // 
+            lblStepStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
+            lblStepStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            lblStepStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            lblStepStatus.ForeColor = System.Drawing.Color.FromArgb(87, 96, 106);
+            lblStepStatus.Location = new System.Drawing.Point(368, 14);
+            lblStepStatus.Name = "lblStepStatus";
+            lblStepStatus.Padding = new System.Windows.Forms.Padding(8, 0, 0, 1);
+            lblStepStatus.Size = new System.Drawing.Size(104, 30);
+            lblStepStatus.TabIndex = 3;
+            lblStepStatus.Text = "Step";
+            lblStepStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblRunStatus
+            // 
+            lblRunStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
+            lblRunStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            lblRunStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            lblRunStatus.ForeColor = System.Drawing.Color.FromArgb(87, 96, 106);
+            lblRunStatus.Location = new System.Drawing.Point(482, 14);
+            lblRunStatus.Name = "lblRunStatus";
+            lblRunStatus.Padding = new System.Windows.Forms.Padding(8, 0, 0, 1);
+            lblRunStatus.Size = new System.Drawing.Size(130, 30);
+            lblRunStatus.TabIndex = 4;
+            lblRunStatus.Text = "Status";
+            lblRunStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblLastTransitionStatus
+            // 
+            lblLastTransitionStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lblLastTransitionStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            lblLastTransitionStatus.ForeColor = System.Drawing.Color.FromArgb(70, 78, 92);
+            lblLastTransitionStatus.Location = new System.Drawing.Point(628, 14);
+            lblLastTransitionStatus.Name = "lblLastTransitionStatus";
+            lblLastTransitionStatus.Size = new System.Drawing.Size(166, 30);
+            lblLastTransitionStatus.TabIndex = 5;
+            lblLastTransitionStatus.Text = "Ready";
+            lblLastTransitionStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // panelTapeCanvas
+            // 
+            panelTapeCanvas.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panelTapeCanvas.BackColor = System.Drawing.SystemColors.ControlLight;
+            panelTapeCanvas.Location = new System.Drawing.Point(14, 398);
+            panelTapeCanvas.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelTapeCanvas.Name = "panelTapeCanvas";
+            panelTapeCanvas.Size = new System.Drawing.Size(813, 183);
+            panelTapeCanvas.TabIndex = 9;
+            panelTapeCanvas.Paint += panelTapeCanvas_Paint;
+            panelTapeCanvas.MouseDown += panelTapeCanvas_MouseDown;
+            panelTapeCanvas.MouseLeave += panelTapeCanvas_MouseLeave;
+            panelTapeCanvas.MouseMove += panelTapeCanvas_MouseMove;
+            panelTapeCanvas.MouseUp += panelTapeCanvas_MouseUp;
+            panelTapeCanvas.SizeChanged += panelTapeCanvas_SizeChanged;
+            // 
+            // lblSummary
+            // 
+            lblSummary.AutoSize = true;
+            lblSummary.Location = new System.Drawing.Point(14, 602);
+            lblSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblSummary.Name = "lblSummary";
+            lblSummary.Size = new System.Drawing.Size(61, 15);
+            lblSummary.TabIndex = 10;
+            lblSummary.Text = "Summary:";
+            // 
+            // openProgramDialog
+            // 
+            openProgramDialog.FileName = "openProgramDialog";
+            openProgramDialog.Filter = "Turing machine programs (*.tm;*.btm)|*.tm;*.btm|Text machine program (*.tm)|*.tm|Binary machine program (*.btm)|*.btm";
+            // 
+            // saveProgramDialog
+            // 
+            saveProgramDialog.Filter = "Text machine program (*.tm)|*.tm|Binary machine program (*.btm)|*.btm";
+            // 
+            // saveGraphDialog
+            // 
+            saveGraphDialog.DefaultExt = "dot";
+            saveGraphDialog.Filter = "Graphviz DOT graph (*.dot)|*.dot|All files (*.*)|*.*";
+            // 
+            // lblSimulationSpeed
+            // 
+            lblSimulationSpeed.AutoSize = true;
+            lblSimulationSpeed.Location = new System.Drawing.Point(14, 50);
+            lblSimulationSpeed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblSimulationSpeed.Name = "lblSimulationSpeed";
+            lblSimulationSpeed.Size = new System.Drawing.Size(101, 15);
+            lblSimulationSpeed.TabIndex = 12;
+            lblSimulationSpeed.Text = "Simulation speed:";
+            // 
+            // trackSimulationDelay
+            // 
+            trackSimulationDelay.Location = new System.Drawing.Point(225, 42);
+            trackSimulationDelay.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            trackSimulationDelay.LargeChange = 1;
+            trackSimulationDelay.Maximum = 5;
+            trackSimulationDelay.Minimum = 0;
+            trackSimulationDelay.Name = "trackSimulationDelay";
+            trackSimulationDelay.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            trackSimulationDelay.Size = new System.Drawing.Size(173, 45);
+            trackSimulationDelay.SmallChange = 1;
+            trackSimulationDelay.TabIndex = 13;
+            trackSimulationDelay.TickFrequency = 1;
+            trackSimulationDelay.Value = 4;
+            trackSimulationDelay.ValueChanged += trackSimulationDelay_ValueChanged;
+            // 
+            // lblSlower
+            // 
+            lblSlower.AutoSize = true;
+            lblSlower.Location = new System.Drawing.Point(158, 50);
+            lblSlower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblSlower.Name = "lblSlower";
+            lblSlower.Size = new System.Drawing.Size(41, 15);
+            lblSlower.TabIndex = 14;
+            lblSlower.Text = "slower";
+            // 
+            // lblFaster
+            // 
+            lblFaster.AutoSize = true;
+            lblFaster.Location = new System.Drawing.Point(405, 50);
+            lblFaster.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblFaster.Name = "lblFaster";
+            lblFaster.Size = new System.Drawing.Size(36, 15);
+            lblFaster.TabIndex = 15;
+            lblFaster.Text = "faster";
+            // 
+            // listProgramTransitions
+            // 
+            listProgramTransitions.AutoArrange = false;
+            listProgramTransitions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { colInputState, colInputSymbol, colOutputState, colOutputSymbol, colHeadMove });
+            listProgramTransitions.FullRowSelect = true;
+            listProgramTransitions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            listProgramTransitions.Location = new System.Drawing.Point(481, 37);
+            listProgramTransitions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            listProgramTransitions.MultiSelect = false;
+            listProgramTransitions.Name = "listProgramTransitions";
+            listProgramTransitions.Size = new System.Drawing.Size(359, 191);
+            listProgramTransitions.TabIndex = 17;
+            listProgramTransitions.UseCompatibleStateImageBehavior = false;
+            listProgramTransitions.View = System.Windows.Forms.View.Details;
+            listProgramTransitions.ItemSelectionChanged += listProgramTransitions_ItemSelectionChanged;
+            listProgramTransitions.MouseDoubleClick += listProgramTransitions_MouseDoubleClick;
+            listProgramTransitions.SizeChanged += listProgramTransitions_SizeChanged;
+            // 
+            // colInputState
+            // 
+            colInputState.Text = "Input state";
+            // 
+            // colInputSymbol
+            // 
+            colInputSymbol.Text = "Read";
+            colInputSymbol.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // colOutputState
+            // 
+            colOutputState.Text = "Output state";
+            colOutputState.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // colOutputSymbol
+            // 
+            colOutputSymbol.Text = "Write";
+            colOutputSymbol.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // colHeadMove
+            // 
+            colHeadMove.Text = "Head";
+            colHeadMove.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // btnStepMachine
+            // 
+            btnStepMachine.BackColor = System.Drawing.SystemColors.Control;
+            btnStepMachine.Enabled = false;
+            btnStepMachine.Location = new System.Drawing.Point(481, 276);
+            btnStepMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnStepMachine.Name = "btnStepMachine";
+            btnStepMachine.Size = new System.Drawing.Size(92, 45);
+            btnStepMachine.TabIndex = 16;
+            btnStepMachine.Text = "Step";
+            btnStepMachine.UseVisualStyleBackColor = false;
+            btnStepMachine.Click += btnStepMachine_Click;
+            // 
+            // btnPauseMachine
+            // 
+            btnPauseMachine.BackColor = System.Drawing.SystemColors.Control;
+            btnPauseMachine.Enabled = false;
+            btnPauseMachine.Location = new System.Drawing.Point(374, 276);
+            btnPauseMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPauseMachine.Name = "btnPauseMachine";
+            btnPauseMachine.Size = new System.Drawing.Size(92, 45);
+            btnPauseMachine.TabIndex = 28;
+            btnPauseMachine.Text = "Pause";
+            btnPauseMachine.UseVisualStyleBackColor = false;
+            btnPauseMachine.Click += btnPauseMachine_Click;
             // 
             // btnResetMachine
             // 
-            this.btnResetMachine.BackColor = System.Drawing.SystemColors.Control;
-            this.btnResetMachine.Enabled = false;
-            this.btnResetMachine.Location = new System.Drawing.Point(501, 191);
-            this.btnResetMachine.Name = "btnResetMachine";
-            this.btnResetMachine.Size = new System.Drawing.Size(79, 39);
-            this.btnResetMachine.TabIndex = 19;
-            this.btnResetMachine.Text = "Reset";
-            this.btnResetMachine.UseVisualStyleBackColor = false;
-            this.btnResetMachine.Click += new System.EventHandler(this.btnResetMachine_Click);
+            btnResetMachine.BackColor = System.Drawing.SystemColors.Control;
+            btnResetMachine.Enabled = false;
+            btnResetMachine.Location = new System.Drawing.Point(584, 276);
+            btnResetMachine.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnResetMachine.Name = "btnResetMachine";
+            btnResetMachine.Size = new System.Drawing.Size(92, 45);
+            btnResetMachine.TabIndex = 19;
+            btnResetMachine.Text = "Reset";
+            btnResetMachine.UseVisualStyleBackColor = false;
+            btnResetMachine.Click += btnResetMachine_Click;
+            // 
+            // mainMenu
+            // 
+            mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuFile, menuView, menuTools });
+            mainMenu.Location = new System.Drawing.Point(0, 0);
+            mainMenu.Name = "mainMenu";
+            mainMenu.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            mainMenu.Size = new System.Drawing.Size(854, 24);
+            mainMenu.TabIndex = 20;
+            mainMenu.Text = "mainMenu";
+            // 
+            // menuFile
+            // 
+            menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuOpenProgram, menuSaveProgram, menuSaveProgramAs });
+            menuFile.Name = "menuFile";
+            menuFile.Size = new System.Drawing.Size(37, 20);
+            menuFile.Text = "File";
+            // 
+            // menuOpenProgram
+            // 
+            menuOpenProgram.Name = "menuOpenProgram";
+            menuOpenProgram.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
+            menuOpenProgram.Size = new System.Drawing.Size(155, 22);
+            menuOpenProgram.Text = "Open...";
+            menuOpenProgram.Click += menuOpenProgram_Click;
+            // 
+            // menuSaveProgram
+            // 
+            menuSaveProgram.Enabled = false;
+            menuSaveProgram.Name = "menuSaveProgram";
+            menuSaveProgram.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
+            menuSaveProgram.Size = new System.Drawing.Size(155, 22);
+            menuSaveProgram.Text = "Save";
+            menuSaveProgram.Click += menuSaveProgram_Click;
+            // 
+            // menuSaveProgramAs
+            // 
+            menuSaveProgramAs.Enabled = false;
+            menuSaveProgramAs.Name = "menuSaveProgramAs";
+            menuSaveProgramAs.Size = new System.Drawing.Size(155, 22);
+            menuSaveProgramAs.Text = "Save As...";
+            menuSaveProgramAs.Click += menuSaveProgramAs_Click;
+            // 
+            // menuView
+            // 
+            menuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuHeadMovesOverTape, menuTapeFollowsHead, menuSoundEffects });
+            menuView.Name = "menuView";
+            menuView.Size = new System.Drawing.Size(44, 20);
+            menuView.Text = "View";
+            // 
+            // menuHeadMovesOverTape
+            // 
+            menuHeadMovesOverTape.CheckOnClick = true;
+            menuHeadMovesOverTape.Name = "menuHeadMovesOverTape";
+            menuHeadMovesOverTape.Size = new System.Drawing.Size(196, 22);
+            menuHeadMovesOverTape.Text = "Head moves over tape";
+            menuHeadMovesOverTape.Click += menuHeadMovesOverTape_Click;
+            // 
+            // menuTapeFollowsHead
+            // 
+            menuTapeFollowsHead.CheckOnClick = true;
+            menuTapeFollowsHead.Name = "menuTapeFollowsHead";
+            menuTapeFollowsHead.Size = new System.Drawing.Size(196, 22);
+            menuTapeFollowsHead.Text = "Tape follows head";
+            menuTapeFollowsHead.Click += menuTapeFollowsHead_Click;
+            // 
+            // menuSoundEffects
+            // 
+            menuSoundEffects.Checked = true;
+            menuSoundEffects.CheckOnClick = true;
+            menuSoundEffects.CheckState = System.Windows.Forms.CheckState.Checked;
+            menuSoundEffects.Name = "menuSoundEffects";
+            menuSoundEffects.Size = new System.Drawing.Size(196, 22);
+            menuSoundEffects.Text = "Sound effects";
+            // 
+            // menuTools
+            // 
+            menuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuEditTransitions, menuExportGraph });
+            menuTools.Name = "menuTools";
+            menuTools.Size = new System.Drawing.Size(46, 20);
+            menuTools.Text = "Tools";
+            // 
+            // menuEditTransitions
+            // 
+            menuEditTransitions.Name = "menuEditTransitions";
+            menuEditTransitions.Size = new System.Drawing.Size(161, 22);
+            menuEditTransitions.Text = "Edit transitions...";
+            menuEditTransitions.Click += menuEditTransitions_Click;
+            // 
+            // menuExportGraph
+            // 
+            menuExportGraph.Enabled = false;
+            menuExportGraph.Name = "menuExportGraph";
+            menuExportGraph.Size = new System.Drawing.Size(161, 22);
+            menuExportGraph.Text = "Export graph...";
+            menuExportGraph.Click += menuExportGraph_Click;
+            // 
+            // simulationTimer
+            // 
+            simulationTimer.Tick += simulationTimer_Tick;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 594);
-            this.Controls.Add(this.btnResetMachine);
-            this.Controls.Add(this.btnSetInputData);
-            this.Controls.Add(this.listProgramTransitions);
-            this.Controls.Add(this.btnStepMachine);
-            this.Controls.Add(this.lblFaster);
-            this.Controls.Add(this.lblSlower);
-            this.Controls.Add(this.trackSimulationDelay);
-            this.Controls.Add(this.lblSimulationSpeed);
-            this.Controls.Add(this.btnBrowseProgram);
-            this.Controls.Add(this.lblSummary);
-            this.Controls.Add(this.panelTapeCanvas);
-            this.Controls.Add(this.lblInputData);
-            this.Controls.Add(this.txtInputData);
-            this.Controls.Add(this.btnRunMachine);
-            this.Controls.Add(this.lblProgramFile);
-            this.Controls.Add(this.txtProgramFile);
-            this.Controls.Add(this.lblTape);
-            this.Controls.Add(this.txtSummary);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Turing Machine Simulator";
-            ((System.ComponentModel.ISupportInitialize)(this.trackSimulationDelay)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(854, 741);
+            Controls.Add(btnResetMachine);
+            Controls.Add(btnPauseMachine);
+            Controls.Add(panelSimulationStatus);
+            Controls.Add(grpMachineDefinition);
+            Controls.Add(listProgramTransitions);
+            Controls.Add(btnStepMachine);
+            Controls.Add(lblFaster);
+            Controls.Add(lblSlower);
+            Controls.Add(trackSimulationDelay);
+            Controls.Add(lblSimulationSpeed);
+            Controls.Add(lblSummary);
+            Controls.Add(panelTapeCanvas);
+            Controls.Add(btnRunMachine);
+            Controls.Add(lblProgramFile);
+            Controls.Add(txtProgramFile);
+            Controls.Add(lblTape);
+            Controls.Add(txtSummary);
+            Controls.Add(mainMenu);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            MainMenuStrip = mainMenu;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "MainForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "UTMS";
+            panelSimulationStatus.ResumeLayout(false);
+            grpMachineDefinition.ResumeLayout(false);
+            grpMachineDefinition.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trackSimulationDelay).EndInit();
+            mainMenu.ResumeLayout(false);
+            mainMenu.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -317,18 +666,27 @@
         private System.Windows.Forms.Label lblTape;
         private System.Windows.Forms.TextBox txtProgramFile;
         private System.Windows.Forms.Label lblProgramFile;
+        private System.Windows.Forms.TextBox txtInputAlphabet;
+        private System.Windows.Forms.Label lblInputAlphabet;
+        private System.Windows.Forms.TextBox txtTapeAlphabet;
+        private System.Windows.Forms.Label lblTapeAlphabet;
+        private System.Windows.Forms.TextBox txtBlankSymbol;
+        private System.Windows.Forms.Label lblBlankSymbol;
+        private System.Windows.Forms.GroupBox grpMachineDefinition;
         private System.Windows.Forms.Button btnRunMachine;
         private System.Windows.Forms.TextBox txtInputData;
         private System.Windows.Forms.Label lblInputData;
         private System.Windows.Forms.Panel panelTapeCanvas;
         private System.Windows.Forms.Label lblSummary;
         private System.Windows.Forms.OpenFileDialog openProgramDialog;
-        private System.Windows.Forms.Button btnBrowseProgram;
+        private System.Windows.Forms.SaveFileDialog saveProgramDialog;
+        private System.Windows.Forms.SaveFileDialog saveGraphDialog;
         private System.Windows.Forms.Label lblSimulationSpeed;
         private System.Windows.Forms.TrackBar trackSimulationDelay;
         private System.Windows.Forms.Label lblSlower;
         private System.Windows.Forms.Label lblFaster;
         private System.Windows.Forms.Button btnStepMachine;
+        private System.Windows.Forms.Button btnPauseMachine;
         private System.Windows.Forms.ListView listProgramTransitions;
         private System.Windows.Forms.ColumnHeader colInputState;
         private System.Windows.Forms.ColumnHeader colInputSymbol;
@@ -337,6 +695,26 @@
         private System.Windows.Forms.ColumnHeader colHeadMove;
         private System.Windows.Forms.Button btnSetInputData;
         private System.Windows.Forms.Button btnResetMachine;
+        private System.Windows.Forms.Panel panelSimulationStatus;
+        private System.Windows.Forms.Label lblMachineStateStatus;
+        private System.Windows.Forms.Label lblHeadStatus;
+        private System.Windows.Forms.Label lblReadStatus;
+        private System.Windows.Forms.Label lblStepStatus;
+        private System.Windows.Forms.Label lblRunStatus;
+        private System.Windows.Forms.Label lblLastTransitionStatus;
+        private System.Windows.Forms.MenuStrip mainMenu;
+        private System.Windows.Forms.ToolStripMenuItem menuFile;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenProgram;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveProgram;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveProgramAs;
+        private System.Windows.Forms.ToolStripMenuItem menuView;
+        private System.Windows.Forms.ToolStripMenuItem menuHeadMovesOverTape;
+        private System.Windows.Forms.ToolStripMenuItem menuTapeFollowsHead;
+        private System.Windows.Forms.ToolStripMenuItem menuSoundEffects;
+        private System.Windows.Forms.ToolStripMenuItem menuTools;
+        private System.Windows.Forms.ToolStripMenuItem menuEditTransitions;
+        private System.Windows.Forms.ToolStripMenuItem menuExportGraph;
+        private System.Windows.Forms.Timer simulationTimer;
     }
 }
 
