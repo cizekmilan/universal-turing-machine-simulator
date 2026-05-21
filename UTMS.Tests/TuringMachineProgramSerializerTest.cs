@@ -127,6 +127,38 @@ namespace UTMS.Tests
         }
 
         /// <summary>
+        /// Ověřuje, že textový formát odmítne názvy stavů s oddělovači přechodové funkce.
+        /// </summary>
+        [Fact]
+        public void ToText_RejectsStateNamesReservedByTextFormat()
+        {
+            List<TransitionFunction> program = new List<TransitionFunction>
+            {
+                new TransitionFunction("q,0", '0', "qF", '0', 'S')
+            };
+
+            ArgumentException exception = Assert.Throws<ArgumentException>(() => TuringMachineProgramSerializer.ToText(program, "0"));
+
+            Assert.Contains("reserved", exception.Message);
+        }
+
+        /// <summary>
+        /// Ověřuje, že textový formát odmítne páskové symboly, které by nebylo možné jednoznačně načíst.
+        /// </summary>
+        [Fact]
+        public void ToText_RejectsSymbolsReservedByTextFormat()
+        {
+            List<TransitionFunction> program = new List<TransitionFunction>
+            {
+                new TransitionFunction("q0", '0', "qF", ',', 'S')
+            };
+
+            ArgumentException exception = Assert.Throws<ArgumentException>(() => TuringMachineProgramSerializer.ToText(program, "0", new char[] { '0' }, new char[] { '0', '#', ',' }, '#'));
+
+            Assert.Contains("reserved", exception.Message);
+        }
+
+        /// <summary>
         /// Ověřuje, že binární formát používá deklarovanou páskovou abecedu včetně pomocných symbolů.
         /// </summary>
         [Fact]

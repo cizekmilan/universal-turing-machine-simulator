@@ -18,6 +18,7 @@
     <Compile Include="TuringMachineGraphExporter.cs" />
     <Compile Include="TuringMachineProgram.cs" />
     <Compile Include="TuringMachineProgramSerializer.cs" />
+    <Compile Include="TuringMachineTextFormatRules.cs" />
     <Compile Include="TuringSimulator.cs" />
   </ItemGroup>
 </Project>

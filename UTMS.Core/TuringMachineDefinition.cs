@@ -85,6 +85,29 @@ namespace UTMS.Core
         }
 
         /// <summary>
+        /// Dopočítá páskovou abecedu ze vstupní abecedy, blank symbolu a symbolů použitých v přechodech.
+        /// </summary>
+        public static char[] InferTapeAlphabet(IEnumerable<char> alphabet, char blankSymbol, IEnumerable<TransitionFunction> transitions)
+        {
+            if (alphabet == null)
+                throw new ArgumentNullException(nameof(alphabet));
+            if (transitions == null)
+                throw new ArgumentNullException(nameof(transitions));
+
+            List<char> inferredTapeAlphabet = new List<char>();
+            AddDistinct(inferredTapeAlphabet, alphabet);
+            AddDistinct(inferredTapeAlphabet, blankSymbol);
+
+            foreach (TransitionFunction transition in transitions)
+            {
+                AddDistinct(inferredTapeAlphabet, transition.InputSymbol);
+                AddDistinct(inferredTapeAlphabet, transition.OutputSymbol);
+            }
+
+            return inferredTapeAlphabet.ToArray();
+        }
+
+        /// <summary>
         /// Ověří vztahy mezi abecedami, vstupem, blank symbolem a determinističností přechodů.
         /// </summary>
         private void Validate()

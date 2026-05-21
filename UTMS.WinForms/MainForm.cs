@@ -16,7 +16,6 @@ namespace UTMS.WinForms
         private const int NoSelectedTransitionIndex = -1;
         private static readonly int[] AutomaticStepDelayMilliseconds = new int[] { 50, 100, 250, 500, 1000, 2000 };
 
-        private ErrorProvider validationErrors;
         private Color inputDataDefaultBackColor;
         private Color blankSymbolDefaultBackColor;
         private TapeRenderer tapeRenderer;
@@ -47,11 +46,10 @@ namespace UTMS.WinForms
             // Zvýraznění aktuálního přechodu musí zůstat viditelné i při ovládání simulace tlačítky.
             listProgramTransitions.HideSelection = false;
             ResizeProgramTransitionColumns();
-            validationErrors = new ErrorProvider();
-            validationErrors.ContainerControl = this;
             validationErrors.BlinkStyle = ErrorBlinkStyle.NeverBlink;
             inputDataDefaultBackColor = txtInputData.BackColor;
             blankSymbolDefaultBackColor = txtBlankSymbol.BackColor;
+            PopulateNewMachineFields();
             UpdateWindowTitle();
             UpdateGraphExportState();
             SetSimulationVisualState(SimulationVisualState.Ready);
@@ -190,6 +188,14 @@ namespace UTMS.WinForms
         }
 
         /// <summary>
+        /// Ukončí aplikaci přes položku hlavního menu.
+        /// </summary>
+        private void menuExitApplication_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
         /// Otevře editor přechodových funkcí a po potvrzení synchronizuje definici stroje.
         /// </summary>
         private void menuEditTransitions_Click(object sender, EventArgs e)
@@ -222,12 +228,6 @@ namespace UTMS.WinForms
         /// </summary>
         private void OpenTransitionEditor(int selectedTransitionIndex)
         {
-            if (simulator == null || simulator.Definition == null)
-            {
-                MessageBox.Show("No program is loaded.", "Edit transitions", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             if (!grpMachineDefinition.Enabled)
             {
                 MessageBox.Show("Transitions cannot be edited while simulation is running or paused.", "Edit transitions", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -457,6 +457,28 @@ namespace UTMS.WinForms
         }
 
         /// <summary>
+        /// Vyplní formulář výchozími hodnotami pro nový stroj vytvářený od nuly.
+        /// </summary>
+        private void PopulateNewMachineFields()
+        {
+            bool previousSuppressDirtyTracking = suppressDirtyTracking;
+            suppressDirtyTracking = true;
+            try
+            {
+                char[] inputAlphabet = GetDefaultInputAlphabet();
+                char blankSymbol = Tape.DefaultBlankSymbol;
+                txtInputAlphabet.Text = FormatAlphabet(inputAlphabet);
+                txtTapeAlphabet.Text = FormatAlphabet(TuringMachineDefinition.InferTapeAlphabet(inputAlphabet, blankSymbol, new TransitionFunction[0]));
+                txtBlankSymbol.Text = blankSymbol.ToString();
+                lblInputData.Text = string.Format("Input data on tape (blank symbol is {0}):", blankSymbol);
+            }
+            finally
+            {
+                suppressDirtyTracking = previousSuppressDirtyTracking;
+            }
+        }
+
+        /// <summary>
         /// Vytvoří formální definici stroje z aktuálních hodnot formuláře a načtených přechodů.
         /// </summary>
         private TuringMachineDefinition CreateDefinitionFromForm()
@@ -475,7 +497,7 @@ namespace UTMS.WinForms
 
             char[] inputAlphabet = GetCurrentInputAlphabet();
             ValidateInputData(txtInputData.Text, inputAlphabet, blank[0]);
-            char[] tapeAlphabet = InferTapeAlphabet(transitions, inputAlphabet, blank[0]);
+            char[] tapeAlphabet = TuringMachineDefinition.InferTapeAlphabet(inputAlphabet, blank[0], transitions);
 
             return new TuringMachineDefinition(
                 inputAlphabet,
@@ -494,9 +516,11 @@ namespace UTMS.WinForms
             if (blank.Length != 1)
                 throw new ArgumentException("Blank symbol must be exactly one character.");
 
-            IEnumerable<TransitionFunction> transitions = simulator.Definition.Transitions;
+            IEnumerable<TransitionFunction> transitions = simulator != null && simulator.Definition != null
+                ? simulator.Definition.Transitions
+                : new TransitionFunction[0];
             char[] inputAlphabet = GetCurrentInputAlphabet();
-            char[] tapeAlphabet = InferTapeAlphabet(transitions, inputAlphabet, blank[0]);
+            char[] tapeAlphabet = TuringMachineDefinition.InferTapeAlphabet(inputAlphabet, blank[0], transitions);
             return new TuringMachineDefinition(
                 inputAlphabet,
                 tapeAlphabet,
@@ -525,11 +549,19 @@ namespace UTMS.WinForms
 
             if (result.Count == 0)
             {
-                AddDistinct(result, '0');
-                AddDistinct(result, '1');
+                foreach (char symbol in GetDefaultInputAlphabet())
+                    AddDistinct(result, symbol);
             }
 
             return result.ToArray();
+        }
+
+        /// <summary>
+        /// Vrátí výchozí vstupní abecedu pro nově vytvářený stroj.
+        /// </summary>
+        private static char[] GetDefaultInputAlphabet()
+        {
+            return new char[] { '0', '1' };
         }
 
         /// <summary>
@@ -537,6 +569,9 @@ namespace UTMS.WinForms
         /// </summary>
         private static void ValidateInputData(string inputData, IEnumerable<char> inputAlphabet, char blankSymbol)
         {
+            if (ContainsSymbol(inputAlphabet, blankSymbol))
+                throw new ArgumentException("Blank symbol cannot be part of the input alphabet.");
+
             char invalidSymbol;
             if (!TryFindInvalidInputSymbol(inputData, inputAlphabet, blankSymbol, out invalidSymbol))
                 return;
@@ -565,26 +600,6 @@ namespace UTMS.WinForms
 
             invalidSymbol = '\0';
             return false;
-        }
-
-        /// <summary>
-        /// Odvodí páskovou abecedu ze vstupní abecedy, blank symbolu a symbolů použitých v přechodech.
-        /// </summary>
-        private static char[] InferTapeAlphabet(IEnumerable<TransitionFunction> transitions, IEnumerable<char> inputAlphabet, char blankSymbol)
-        {
-            List<char> result = new List<char>();
-            foreach (char symbol in inputAlphabet)
-                AddDistinct(result, symbol);
-
-            AddDistinct(result, blankSymbol);
-
-            foreach (TransitionFunction transition in transitions)
-            {
-                AddDistinct(result, transition.InputSymbol);
-                AddDistinct(result, transition.OutputSymbol);
-            }
-
-            return result.ToArray();
         }
 
         /// <summary>
@@ -1004,7 +1019,7 @@ namespace UTMS.WinForms
         {
             label.BackColor = backColor;
             label.ForeColor = textColor;
-            label.Text = string.Format("{0}   {1}", title, value);
+            label.Text = string.Format("{0}:   {1}", title, value);
         }
 
         /// <summary>
@@ -1052,7 +1067,7 @@ namespace UTMS.WinForms
                     textColor = Color.FromArgb(26, 127, 55);
                     break;
                 case SimulationVisualState.NoTransition:
-                    text = "No transition";
+                    text = "FAILED";
                     backColor = Color.FromArgb(255, 241, 230);
                     textColor = Color.FromArgb(188, 76, 0);
                     break;
@@ -1165,7 +1180,6 @@ namespace UTMS.WinForms
         {
             formClosing = true;
             tapeRenderer?.Dispose();
-            validationErrors?.Dispose();
             writeHighlightTimer?.Dispose();
             tapeMoveSound?.Dispose();
             machineStopSound?.Dispose();
@@ -1233,7 +1247,7 @@ namespace UTMS.WinForms
         }
 
         /// <summary>
-        /// Označí dokument jako změněný nebo uložený a obnoví titulek okna.
+        /// Označí definici jako změněnou nebo uloženou a obnoví titulek okna.
         /// </summary>
         private void SetDirty(bool dirty)
         {
@@ -1294,6 +1308,13 @@ namespace UTMS.WinForms
             }
 
             char[] inputAlphabet = GetCurrentInputAlphabet();
+            if (ContainsSymbol(inputAlphabet, blank[0]))
+            {
+                validationErrors.SetError(txtBlankSymbol, "Blank symbol cannot be part of the input alphabet.");
+                txtBlankSymbol.BackColor = Color.MistyRose;
+                return;
+            }
+
             char invalidSymbol;
             if (!TryFindInvalidInputSymbol(txtInputData.Text, inputAlphabet, blank[0], out invalidSymbol))
                 return;
@@ -1303,6 +1324,20 @@ namespace UTMS.WinForms
                 : string.Format("Input symbol \"{0}\" is not defined in the input alphabet.", invalidSymbol);
             validationErrors.SetError(txtInputData, errorMessage);
             txtInputData.BackColor = Color.MistyRose;
+        }
+
+        /// <summary>
+        /// Zjistí, zda seznam obsahuje zadaný symbol.
+        /// </summary>
+        private static bool ContainsSymbol(IEnumerable<char> values, char symbol)
+        {
+            foreach (char value in values)
+            {
+                if (value == symbol)
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>

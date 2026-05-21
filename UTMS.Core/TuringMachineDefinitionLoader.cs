@@ -205,7 +205,7 @@ namespace UTMS.Core
             char blankSymbol = parsedBlankSymbol.HasValue ? parsedBlankSymbol.Value : Tape.DefaultBlankSymbol;
 
             List<char> inputAlphabet = parsedAlphabet ?? new List<char>(new char[] { '0', '1' });
-            List<char> fullTapeAlphabet = parsedTapeAlphabet ?? InferTapeAlphabet(inputAlphabet, blankSymbol, transitions);
+            List<char> fullTapeAlphabet = parsedTapeAlphabet ?? new List<char>(TuringMachineDefinition.InferTapeAlphabet(inputAlphabet, blankSymbol, transitions));
 
             if (!fullTapeAlphabet.Contains(blankSymbol))
             {
@@ -290,24 +290,6 @@ namespace UTMS.Core
         }
 
         /// <summary>
-        /// Dopočítá páskovou abecedu z input abecedy, blank symbolu a symbolů použitých v přechodech.
-        /// </summary>
-        private static List<char> InferTapeAlphabet(IEnumerable<char> inputAlphabet, char blankSymbol, IEnumerable<TransitionFunction> transitions)
-        {
-            List<char> fullTapeAlphabet = new List<char>();
-            AddDistinct(fullTapeAlphabet, inputAlphabet);
-            AddDistinct(fullTapeAlphabet, blankSymbol);
-
-            foreach (TransitionFunction transition in transitions)
-            {
-                AddDistinct(fullTapeAlphabet, transition.InputSymbol);
-                AddDistinct(fullTapeAlphabet, transition.OutputSymbol);
-            }
-
-            return fullTapeAlphabet;
-        }
-
-        /// <summary>
         /// Vrátí obsah první dvojice závorek v přechodové části řádku.
         /// </summary>
         private static string GetTupleContent(string expression)
@@ -315,24 +297,6 @@ namespace UTMS.Core
             int openParen = expression.IndexOf('(');
             int closeParen = expression.IndexOf(')');
             return expression.Substring(openParen + 1, closeParen - openParen - 1);
-        }
-
-        /// <summary>
-        /// Přidá do cílového seznamu pouze znaky, které v něm dosud nejsou.
-        /// </summary>
-        private static void AddDistinct(IList<char> target, IEnumerable<char> values)
-        {
-            foreach (char value in values)
-                AddDistinct(target, value);
-        }
-
-        /// <summary>
-        /// Přidá znak do cílového seznamu bez vytvoření duplicity.
-        /// </summary>
-        private static void AddDistinct(IList<char> target, char value)
-        {
-            if (!target.Contains(value))
-                target.Add(value);
         }
     }
 }

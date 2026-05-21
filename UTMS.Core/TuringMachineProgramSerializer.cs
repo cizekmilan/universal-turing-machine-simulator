@@ -45,6 +45,9 @@ namespace UTMS.Core
             List<TransitionFunction> transitions = new List<TransitionFunction>(program);
             List<char> alphabetList = NormalizeAlphabet(alphabet, "alphabet");
             List<char> tapeAlphabetList = NormalizeAlphabet(tapeAlphabet, "tapeAlphabet");
+            ValidateTextSymbols(alphabetList);
+            ValidateTextSymbols(tapeAlphabetList);
+            ValidateTextSymbol(blankSymbol);
             ValidateDefinition(alphabetList, tapeAlphabetList, blankSymbol, inputData);
 
             StringBuilder sb = new StringBuilder();
@@ -61,6 +64,7 @@ namespace UTMS.Core
 
             foreach (TransitionFunction transition in transitions)
             {
+                ValidateTextTransition(transition);
                 ValidateTransitionSymbols(transition, tapeAlphabetList);
                 sb.AppendFormat("({0}, {1}) = ({2}, {3}, {4})", transition.InputState, transition.InputSymbol, transition.OutputState, transition.OutputSymbol, transition.HeadMove);
                 sb.AppendLine();
@@ -121,7 +125,7 @@ namespace UTMS.Core
 
             List<TransitionFunction> transitions = new List<TransitionFunction>(program);
             List<char> alphabet = BuildAlphabet(inputData);
-            List<char> tapeAlphabet = BuildTapeAlphabet(transitions, alphabet, Tape.DefaultBlankSymbol);
+            List<char> tapeAlphabet = new List<char>(TuringMachineDefinition.InferTapeAlphabet(alphabet, Tape.DefaultBlankSymbol, transitions));
             return ToBinary(transitions, inputData, alphabet, tapeAlphabet, Tape.DefaultBlankSymbol);
         }
 
@@ -327,24 +331,6 @@ namespace UTMS.Core
         }
 
         /// <summary>
-        /// Sestaví páskovou abecedu z input abecedy, blank symbolu a symbolů v přechodech.
-        /// </summary>
-        private static List<char> BuildTapeAlphabet(IEnumerable<TransitionFunction> transitions, IEnumerable<char> alphabet, char blankSymbol)
-        {
-            List<char> tapeAlphabet = new List<char>();
-            AddDistinct(tapeAlphabet, alphabet);
-            AddDistinct(tapeAlphabet, blankSymbol);
-
-            foreach (TransitionFunction transition in transitions)
-            {
-                AddDistinct(tapeAlphabet, transition.InputSymbol);
-                AddDistinct(tapeAlphabet, transition.OutputSymbol);
-            }
-
-            return tapeAlphabet;
-        }
-
-        /// <summary>
         /// Normalizuje abecedu do neprázdného seznamu bez duplicit.
         /// </summary>
         private static List<char> NormalizeAlphabet(IEnumerable<char> alphabet, string argumentName)
@@ -396,6 +382,46 @@ namespace UTMS.Core
                 throw new ArgumentException(string.Format("Input symbol \"{0}\" is not defined in the tape alphabet.", transition.InputSymbol));
             if (IndexOf(tapeAlphabet, transition.OutputSymbol) < 0)
                 throw new ArgumentException(string.Format("Output symbol \"{0}\" is not defined in the tape alphabet.", transition.OutputSymbol));
+        }
+
+        /// <summary>
+        /// Ověří, že přechod lze jednoznačně zapsat do textového formátu.
+        /// </summary>
+        private static void ValidateTextTransition(TransitionFunction transition)
+        {
+            ValidateTextStateName(transition.InputState);
+            ValidateTextStateName(transition.OutputState);
+            ValidateTextSymbol(transition.InputSymbol);
+            ValidateTextSymbol(transition.OutputSymbol);
+        }
+
+        /// <summary>
+        /// Ověří všechny symboly abecedy proti omezením textového formátu.
+        /// </summary>
+        private static void ValidateTextSymbols(IEnumerable<char> symbols)
+        {
+            foreach (char symbol in symbols)
+                ValidateTextSymbol(symbol);
+        }
+
+        /// <summary>
+        /// Ověří název stavu a převede validační chybu na výjimku serializeru.
+        /// </summary>
+        private static void ValidateTextStateName(string stateName)
+        {
+            string errorMessage;
+            if (!TuringMachineTextFormatRules.TryValidateStateName(stateName, out errorMessage))
+                throw new ArgumentException(errorMessage);
+        }
+
+        /// <summary>
+        /// Ověří páskový symbol a převede validační chybu na výjimku serializeru.
+        /// </summary>
+        private static void ValidateTextSymbol(char symbol)
+        {
+            string errorMessage;
+            if (!TuringMachineTextFormatRules.TryValidateTapeSymbol(symbol, out errorMessage))
+                throw new ArgumentException(errorMessage);
         }
 
         /// <summary>

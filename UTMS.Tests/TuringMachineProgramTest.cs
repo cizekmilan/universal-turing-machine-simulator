@@ -99,6 +99,27 @@ namespace UTMS.Tests
         }
 
         /// <summary>
+        /// Ověřuje, že odvození páskové abecedy ponechá vstupní abecedu oddělenou od pomocných symbolů.
+        /// </summary>
+        [Fact]
+        public void TuringMachineDefinition_InferTapeAlphabetAddsBlankAndHelperSymbols()
+        {
+            TransitionFunction[] transitions = new TransitionFunction[]
+            {
+                new TransitionFunction("q0", '0', "q1", 'x', 'R'),
+                new TransitionFunction("q1", 'x', "qF", '#', 'S')
+            };
+
+            char[] tapeAlphabet = TuringMachineDefinition.InferTapeAlphabet(new char[] { '0', '1' }, '#', transitions);
+
+            Assert.Contains('0', tapeAlphabet);
+            Assert.Contains('1', tapeAlphabet);
+            Assert.Contains('#', tapeAlphabet);
+            Assert.Contains('x', tapeAlphabet);
+            Assert.Equal(4, tapeAlphabet.Length);
+        }
+
+        /// <summary>
         /// Ověřuje, že definice odmítne vstupní slovo obsahující symbol mimo vstupní abecedu.
         /// </summary>
         [Fact]

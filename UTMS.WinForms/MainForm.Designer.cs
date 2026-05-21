@@ -75,17 +75,22 @@
             menuOpenProgram = new System.Windows.Forms.ToolStripMenuItem();
             menuSaveProgram = new System.Windows.Forms.ToolStripMenuItem();
             menuSaveProgramAs = new System.Windows.Forms.ToolStripMenuItem();
-            menuView = new System.Windows.Forms.ToolStripMenuItem();
+            menuFileSeparatorBeforeExit = new System.Windows.Forms.ToolStripSeparator();
+            menuExitApplication = new System.Windows.Forms.ToolStripMenuItem();
+            menuSettings = new System.Windows.Forms.ToolStripMenuItem();
             menuHeadMovesOverTape = new System.Windows.Forms.ToolStripMenuItem();
             menuTapeFollowsHead = new System.Windows.Forms.ToolStripMenuItem();
+            menuSettingsSeparatorBeforeSound = new System.Windows.Forms.ToolStripSeparator();
             menuSoundEffects = new System.Windows.Forms.ToolStripMenuItem();
             menuTools = new System.Windows.Forms.ToolStripMenuItem();
             menuEditTransitions = new System.Windows.Forms.ToolStripMenuItem();
             menuExportGraph = new System.Windows.Forms.ToolStripMenuItem();
             simulationTimer = new System.Windows.Forms.Timer(components);
+            validationErrors = new System.Windows.Forms.ErrorProvider(components);
             grpMachineDefinition.SuspendLayout();
             panelSimulationStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackSimulationDelay).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)validationErrors).BeginInit();
             mainMenu.SuspendLayout();
             SuspendLayout();
             // 
@@ -271,6 +276,7 @@
             // 
             // lblMachineStateStatus
             // 
+            lblMachineStateStatus.AutoEllipsis = true;
             lblMachineStateStatus.BackColor = System.Drawing.Color.FromArgb(230, 241, 255);
             lblMachineStateStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             lblMachineStateStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -285,6 +291,7 @@
             // 
             // lblHeadStatus
             // 
+            lblHeadStatus.AutoEllipsis = true;
             lblHeadStatus.BackColor = System.Drawing.Color.FromArgb(255, 248, 197);
             lblHeadStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             lblHeadStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -299,6 +306,7 @@
             // 
             // lblReadStatus
             // 
+            lblReadStatus.AutoEllipsis = true;
             lblReadStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
             lblReadStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             lblReadStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -313,6 +321,7 @@
             // 
             // lblStepStatus
             // 
+            lblStepStatus.AutoEllipsis = true;
             lblStepStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
             lblStepStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             lblStepStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -327,6 +336,7 @@
             // 
             // lblRunStatus
             // 
+            lblRunStatus.AutoEllipsis = true;
             lblRunStatus.BackColor = System.Drawing.Color.FromArgb(246, 248, 250);
             lblRunStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             lblRunStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -342,6 +352,7 @@
             // lblLastTransitionStatus
             // 
             lblLastTransitionStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lblLastTransitionStatus.AutoEllipsis = true;
             lblLastTransitionStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             lblLastTransitionStatus.ForeColor = System.Drawing.Color.FromArgb(70, 78, 92);
             lblLastTransitionStatus.Location = new System.Drawing.Point(628, 14);
@@ -520,7 +531,7 @@
             // 
             // mainMenu
             // 
-            mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuFile, menuView, menuTools });
+            mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuFile, menuSettings, menuTools });
             mainMenu.Location = new System.Drawing.Point(0, 0);
             mainMenu.Name = "mainMenu";
             mainMenu.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
@@ -530,7 +541,7 @@
             // 
             // menuFile
             // 
-            menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuOpenProgram, menuSaveProgram, menuSaveProgramAs });
+            menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuOpenProgram, menuSaveProgram, menuSaveProgramAs, menuFileSeparatorBeforeExit, menuExitApplication });
             menuFile.Name = "menuFile";
             menuFile.Size = new System.Drawing.Size(37, 20);
             menuFile.Text = "File";
@@ -560,12 +571,25 @@
             menuSaveProgramAs.Text = "Save As...";
             menuSaveProgramAs.Click += menuSaveProgramAs_Click;
             // 
-            // menuView
+            // menuFileSeparatorBeforeExit
             // 
-            menuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuHeadMovesOverTape, menuTapeFollowsHead, menuSoundEffects });
-            menuView.Name = "menuView";
-            menuView.Size = new System.Drawing.Size(44, 20);
-            menuView.Text = "View";
+            menuFileSeparatorBeforeExit.Name = "menuFileSeparatorBeforeExit";
+            menuFileSeparatorBeforeExit.Size = new System.Drawing.Size(152, 6);
+            // 
+            // menuExitApplication
+            // 
+            menuExitApplication.Name = "menuExitApplication";
+            menuExitApplication.ShortcutKeys = System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4;
+            menuExitApplication.Size = new System.Drawing.Size(155, 22);
+            menuExitApplication.Text = "Exit";
+            menuExitApplication.Click += menuExitApplication_Click;
+            // 
+            // menuSettings
+            // 
+            menuSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { menuHeadMovesOverTape, menuTapeFollowsHead, menuSettingsSeparatorBeforeSound, menuSoundEffects });
+            menuSettings.Name = "menuSettings";
+            menuSettings.Size = new System.Drawing.Size(61, 20);
+            menuSettings.Text = "Settings";
             // 
             // menuHeadMovesOverTape
             // 
@@ -582,6 +606,11 @@
             menuTapeFollowsHead.Size = new System.Drawing.Size(196, 22);
             menuTapeFollowsHead.Text = "Tape follows head";
             menuTapeFollowsHead.Click += menuTapeFollowsHead_Click;
+            // 
+            // menuSettingsSeparatorBeforeSound
+            // 
+            menuSettingsSeparatorBeforeSound.Name = "menuSettingsSeparatorBeforeSound";
+            menuSettingsSeparatorBeforeSound.Size = new System.Drawing.Size(193, 6);
             // 
             // menuSoundEffects
             // 
@@ -617,6 +646,10 @@
             // simulationTimer
             // 
             simulationTimer.Tick += simulationTimer_Tick;
+            // 
+            // validationErrors
+            // 
+            validationErrors.ContainerControl = this;
             // 
             // MainForm
             // 
@@ -654,6 +687,7 @@
             grpMachineDefinition.ResumeLayout(false);
             grpMachineDefinition.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackSimulationDelay).EndInit();
+            ((System.ComponentModel.ISupportInitialize)validationErrors).EndInit();
             mainMenu.ResumeLayout(false);
             mainMenu.PerformLayout();
             ResumeLayout(false);
@@ -707,14 +741,18 @@
         private System.Windows.Forms.ToolStripMenuItem menuOpenProgram;
         private System.Windows.Forms.ToolStripMenuItem menuSaveProgram;
         private System.Windows.Forms.ToolStripMenuItem menuSaveProgramAs;
-        private System.Windows.Forms.ToolStripMenuItem menuView;
+        private System.Windows.Forms.ToolStripSeparator menuFileSeparatorBeforeExit;
+        private System.Windows.Forms.ToolStripMenuItem menuExitApplication;
+        private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.ToolStripMenuItem menuHeadMovesOverTape;
         private System.Windows.Forms.ToolStripMenuItem menuTapeFollowsHead;
+        private System.Windows.Forms.ToolStripSeparator menuSettingsSeparatorBeforeSound;
         private System.Windows.Forms.ToolStripMenuItem menuSoundEffects;
         private System.Windows.Forms.ToolStripMenuItem menuTools;
         private System.Windows.Forms.ToolStripMenuItem menuEditTransitions;
         private System.Windows.Forms.ToolStripMenuItem menuExportGraph;
         private System.Windows.Forms.Timer simulationTimer;
+        private System.Windows.Forms.ErrorProvider validationErrors;
     }
 }
 

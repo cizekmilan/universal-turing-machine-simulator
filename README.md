@@ -26,7 +26,7 @@ Current functionality:
 - two tape view modes: moving head over tape or tape following the head
 - editable input word and blank symbol before execution
 - read-only display of the current input alphabet and tape alphabet
-- GUI transition editor for changing machine definitions
+- GUI transition editor for creating and changing machine definitions
 - Graphviz DOT export of state graphs
 - demo machines for common binary tasks
 

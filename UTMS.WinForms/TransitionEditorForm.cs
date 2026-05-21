@@ -18,6 +18,7 @@ namespace UTMS.WinForms
         private static readonly Color InvalidCellBackColor = Color.MistyRose;
 
         private readonly char blankSymbol;
+        private readonly List<char> inputAlphabet;
         private readonly List<TransitionFunction> transitions;
         private bool isUpdatingCell;
 
@@ -38,6 +39,7 @@ namespace UTMS.WinForms
                 throw new ArgumentNullException(nameof(definition));
 
             blankSymbol = definition.BlankSymbol;
+            inputAlphabet = new List<char>(definition.Alphabet);
             transitions = new List<TransitionFunction>();
             InitializeComponent();
 
@@ -187,8 +189,18 @@ namespace UTMS.WinForms
                 return;
             }
 
-            AddStateOption(stateName.Trim());
-            SetCellValue(cell, stateName.Trim());
+            string trimmedStateName = stateName.Trim();
+            string errorMessage;
+            if (!TuringMachineTextFormatRules.TryValidateStateName(trimmedStateName, out errorMessage))
+            {
+                MessageBox.Show(errorMessage, "Edit transitions", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SetCellValue(cell, "q0");
+                RefreshDerivedInformation();
+                return;
+            }
+
+            AddStateOption(trimmedStateName);
+            SetCellValue(cell, trimmedStateName);
             RefreshDerivedInformation();
         }
 
@@ -206,8 +218,18 @@ namespace UTMS.WinForms
                 return;
             }
 
-            AddSymbolOption(symbol.Trim()[0]);
-            SetCellValue(cell, symbol.Trim());
+            char trimmedSymbol = symbol.Trim()[0];
+            string errorMessage;
+            if (!TuringMachineTextFormatRules.TryValidateTapeSymbol(trimmedSymbol, out errorMessage))
+            {
+                MessageBox.Show(errorMessage, "Edit transitions", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SetCellValue(cell, blankSymbol.ToString());
+                RefreshDerivedInformation();
+                return;
+            }
+
+            AddSymbolOption(trimmedSymbol);
+            SetCellValue(cell, trimmedSymbol.ToString());
             RefreshDerivedInformation();
         }
 
@@ -299,8 +321,10 @@ namespace UTMS.WinForms
         private void RefreshDerivedInformation()
         {
             HashSet<string> states = CollectStates();
-            HashSet<char> inputAlphabet = new HashSet<char>();
             HashSet<char> tapeAlphabet = new HashSet<char>();
+
+            foreach (char symbol in inputAlphabet)
+                tapeAlphabet.Add(symbol);
 
             tapeAlphabet.Add(blankSymbol);
             foreach (DataGridViewRow row in gridTransitions.Rows)
@@ -313,11 +337,7 @@ namespace UTMS.WinForms
                 string writeSymbol = GetCellText(row, "WriteSymbol");
 
                 if (readSymbol.Length == 1)
-                {
                     tapeAlphabet.Add(readSymbol[0]);
-                    if (readSymbol[0] != blankSymbol)
-                        inputAlphabet.Add(readSymbol[0]);
-                }
 
                 if (writeSymbol.Length == 1)
                     tapeAlphabet.Add(writeSymbol[0]);
@@ -350,6 +370,7 @@ namespace UTMS.WinForms
             parsedTransitions = new List<TransitionFunction>();
             errorMessage = "";
             Dictionary<string, DataGridViewRow> transitionKeys = new Dictionary<string, DataGridViewRow>();
+            List<string> validationMessages = new List<string>();
             bool isValid = true;
 
             if (markInvalidCells)
@@ -371,7 +392,7 @@ namespace UTMS.WinForms
 
                 if (currentState == "" || readSymbol == "" || nextState == "" || writeSymbol == "" || headMove == "")
                 {
-                    SetFirstError(ref errorMessage, "All transition cells must be filled.");
+                    AddValidationMessage(validationMessages, "All transition cells must be filled.");
                     MarkEmptyCells(row, markInvalidCells);
                     isValid = false;
                     continue;
@@ -379,7 +400,7 @@ namespace UTMS.WinForms
 
                 if (currentState == NewStateOption || nextState == NewStateOption || readSymbol == NewSymbolOption || writeSymbol == NewSymbolOption)
                 {
-                    SetFirstError(ref errorMessage, "Special values for creating states or symbols cannot be saved as transitions.");
+                    AddValidationMessage(validationMessages, "Special values for creating states or symbols cannot be saved as transitions.");
                     MarkSpecialValueCells(row, markInvalidCells);
                     isValid = false;
                     continue;
@@ -387,7 +408,7 @@ namespace UTMS.WinForms
 
                 if (readSymbol.Length != 1 || writeSymbol.Length != 1 || headMove.Length != 1)
                 {
-                    SetFirstError(ref errorMessage, "Read, write and move values must contain exactly one character.");
+                    AddValidationMessage(validationMessages, "Read, write and move values must contain exactly one character.");
                     if (readSymbol.Length != 1)
                         MarkInvalidCell(row, "ReadSymbol", markInvalidCells);
                     if (writeSymbol.Length != 1)
@@ -398,9 +419,15 @@ namespace UTMS.WinForms
                     continue;
                 }
 
+                if (!ValidateTextFormatCells(row, currentState, readSymbol[0], nextState, writeSymbol[0], validationMessages, markInvalidCells))
+                {
+                    isValid = false;
+                    continue;
+                }
+
                 if (!IsMoveSupported(headMove[0]))
                 {
-                    SetFirstError(ref errorMessage, string.Format("Head move must be {0}, {1} or {2}.", TuringMachine.MoveLeftSymbol, TuringMachine.MoveRightSymbol, TuringMachine.StopSymbol));
+                    AddValidationMessage(validationMessages, string.Format("Head move must be {0}, {1} or {2}.", TuringMachine.MoveLeftSymbol, TuringMachine.MoveRightSymbol, TuringMachine.StopSymbol));
                     MarkInvalidCell(row, "HeadMove", markInvalidCells);
                     isValid = false;
                     continue;
@@ -409,7 +436,7 @@ namespace UTMS.WinForms
                 string key = currentState + "|" + readSymbol;
                 if (transitionKeys.ContainsKey(key))
                 {
-                    SetFirstError(ref errorMessage, string.Format("Transition for state \"{0}\" and input symbol \"{1}\" is defined more than once.", currentState, readSymbol));
+                    AddValidationMessage(validationMessages, string.Format("Transition for state \"{0}\" and input symbol \"{1}\" is defined more than once.", currentState, readSymbol));
                     MarkInvalidCell(transitionKeys[key], "CurrentState", markInvalidCells);
                     MarkInvalidCell(transitionKeys[key], "ReadSymbol", markInvalidCells);
                     MarkInvalidCell(row, "CurrentState", markInvalidCells);
@@ -424,20 +451,75 @@ namespace UTMS.WinForms
 
             if (parsedTransitions.Count == 0)
             {
-                SetFirstError(ref errorMessage, "Transition table must contain at least one transition.");
+                AddValidationMessage(validationMessages, "Transition table must contain at least one transition.");
+                errorMessage = FormatValidationMessages(validationMessages);
                 return false;
+            }
+
+            errorMessage = FormatValidationMessages(validationMessages);
+            return isValid;
+        }
+
+        /// <summary>
+        /// Ověří stavy a symboly proti znakům, které by nešly bezpečně zapsat do textového formátu.
+        /// </summary>
+        private static bool ValidateTextFormatCells(DataGridViewRow row, string currentState, char readSymbol, string nextState, char writeSymbol, IList<string> validationMessages, bool markInvalidCells)
+        {
+            bool isValid = true;
+            string message;
+
+            if (!TuringMachineTextFormatRules.TryValidateStateName(currentState, out message))
+            {
+                AddValidationMessage(validationMessages, message);
+                MarkInvalidCell(row, "CurrentState", markInvalidCells);
+                isValid = false;
+            }
+
+            if (!TuringMachineTextFormatRules.TryValidateStateName(nextState, out message))
+            {
+                AddValidationMessage(validationMessages, message);
+                MarkInvalidCell(row, "NextState", markInvalidCells);
+                isValid = false;
+            }
+
+            if (!TuringMachineTextFormatRules.TryValidateTapeSymbol(readSymbol, out message))
+            {
+                AddValidationMessage(validationMessages, message);
+                MarkInvalidCell(row, "ReadSymbol", markInvalidCells);
+                isValid = false;
+            }
+
+            if (!TuringMachineTextFormatRules.TryValidateTapeSymbol(writeSymbol, out message))
+            {
+                AddValidationMessage(validationMessages, message);
+                MarkInvalidCell(row, "WriteSymbol", markInvalidCells);
+                isValid = false;
             }
 
             return isValid;
         }
 
         /// <summary>
-        /// Nastaví první validační chybu a další chyby už pouze zvýrazní v tabulce.
+        /// Přidá validační zprávu jen jednou, aby panel neopakoval stejnou chybu pro více řádků.
         /// </summary>
-        private static void SetFirstError(ref string errorMessage, string newErrorMessage)
+        private static void AddValidationMessage(IList<string> validationMessages, string message)
         {
-            if (errorMessage == "")
-                errorMessage = newErrorMessage;
+            if (!validationMessages.Contains(message))
+                validationMessages.Add(message);
+        }
+
+        /// <summary>
+        /// Sloučí validační zprávy do krátkého textu pro stavový panel editoru.
+        /// </summary>
+        private static string FormatValidationMessages(IList<string> validationMessages)
+        {
+            if (validationMessages.Count == 0)
+                return "";
+
+            if (validationMessages.Count == 1)
+                return validationMessages[0];
+
+            return validationMessages.Count + " errors: " + string.Join("; ", validationMessages);
         }
 
         /// <summary>
