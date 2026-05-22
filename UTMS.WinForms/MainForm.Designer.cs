@@ -90,8 +90,8 @@
             grpMachineDefinition.SuspendLayout();
             panelSimulationStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackSimulationDelay).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)validationErrors).BeginInit();
             mainMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)validationErrors).BeginInit();
             SuspendLayout();
             // 
             // txtSummary
@@ -376,12 +376,12 @@
             panelTapeCanvas.Name = "panelTapeCanvas";
             panelTapeCanvas.Size = new System.Drawing.Size(826, 183);
             panelTapeCanvas.TabIndex = 9;
+            panelTapeCanvas.SizeChanged += panelTapeCanvas_SizeChanged;
             panelTapeCanvas.Paint += panelTapeCanvas_Paint;
             panelTapeCanvas.MouseDown += panelTapeCanvas_MouseDown;
             panelTapeCanvas.MouseLeave += panelTapeCanvas_MouseLeave;
             panelTapeCanvas.MouseMove += panelTapeCanvas_MouseMove;
             panelTapeCanvas.MouseUp += panelTapeCanvas_MouseUp;
-            panelTapeCanvas.SizeChanged += panelTapeCanvas_SizeChanged;
             // 
             // lblSummary
             // 
@@ -419,17 +419,14 @@
             // 
             // trackSimulationDelay
             // 
+            trackSimulationDelay.LargeChange = 1;
             trackSimulationDelay.Location = new System.Drawing.Point(225, 42);
             trackSimulationDelay.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            trackSimulationDelay.LargeChange = 1;
             trackSimulationDelay.Maximum = 5;
-            trackSimulationDelay.Minimum = 0;
             trackSimulationDelay.Name = "trackSimulationDelay";
             trackSimulationDelay.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             trackSimulationDelay.Size = new System.Drawing.Size(173, 45);
-            trackSimulationDelay.SmallChange = 1;
             trackSimulationDelay.TabIndex = 0;
-            trackSimulationDelay.TickFrequency = 1;
             trackSimulationDelay.Value = 4;
             trackSimulationDelay.ValueChanged += trackSimulationDelay_ValueChanged;
             // 
@@ -468,8 +465,8 @@
             listProgramTransitions.UseCompatibleStateImageBehavior = false;
             listProgramTransitions.View = System.Windows.Forms.View.Details;
             listProgramTransitions.ItemSelectionChanged += listProgramTransitions_ItemSelectionChanged;
-            listProgramTransitions.MouseDoubleClick += listProgramTransitions_MouseDoubleClick;
             listProgramTransitions.SizeChanged += listProgramTransitions_SizeChanged;
+            listProgramTransitions.MouseDoubleClick += listProgramTransitions_MouseDoubleClick;
             // 
             // colInputState
             // 
@@ -600,7 +597,7 @@
             // 
             menuHeadMovesOverTape.CheckOnClick = true;
             menuHeadMovesOverTape.Name = "menuHeadMovesOverTape";
-            menuHeadMovesOverTape.Size = new System.Drawing.Size(196, 22);
+            menuHeadMovesOverTape.Size = new System.Drawing.Size(192, 22);
             menuHeadMovesOverTape.Text = "Head moves over tape";
             menuHeadMovesOverTape.Click += menuHeadMovesOverTape_Click;
             // 
@@ -608,14 +605,14 @@
             // 
             menuTapeFollowsHead.CheckOnClick = true;
             menuTapeFollowsHead.Name = "menuTapeFollowsHead";
-            menuTapeFollowsHead.Size = new System.Drawing.Size(196, 22);
+            menuTapeFollowsHead.Size = new System.Drawing.Size(192, 22);
             menuTapeFollowsHead.Text = "Tape follows head";
             menuTapeFollowsHead.Click += menuTapeFollowsHead_Click;
             // 
             // menuSettingsSeparatorBeforeSound
             // 
             menuSettingsSeparatorBeforeSound.Name = "menuSettingsSeparatorBeforeSound";
-            menuSettingsSeparatorBeforeSound.Size = new System.Drawing.Size(193, 6);
+            menuSettingsSeparatorBeforeSound.Size = new System.Drawing.Size(189, 6);
             // 
             // menuSoundEffects
             // 
@@ -623,7 +620,7 @@
             menuSoundEffects.CheckOnClick = true;
             menuSoundEffects.CheckState = System.Windows.Forms.CheckState.Checked;
             menuSoundEffects.Name = "menuSoundEffects";
-            menuSoundEffects.Size = new System.Drawing.Size(196, 22);
+            menuSoundEffects.Size = new System.Drawing.Size(192, 22);
             menuSoundEffects.Text = "Sound effects";
             // 
             // menuTools
@@ -688,13 +685,13 @@
             Name = "MainForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "UTMS - Universal Turing Machine Simulator";
-            panelSimulationStatus.ResumeLayout(false);
             grpMachineDefinition.ResumeLayout(false);
             grpMachineDefinition.PerformLayout();
+            panelSimulationStatus.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)trackSimulationDelay).EndInit();
-            ((System.ComponentModel.ISupportInitialize)validationErrors).EndInit();
             mainMenu.ResumeLayout(false);
             mainMenu.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)validationErrors).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
