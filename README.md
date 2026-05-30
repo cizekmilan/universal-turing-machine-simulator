@@ -159,48 +159,46 @@ The menu item is enabled only when a loaded machine contains at least one transi
 
 ```text
 /
-+-- demos/                     # Example .tm and .btm machine definitions
-|
-+-- UTMS.Core/                 # Simulation core and file formats
-|   +-- BinaryCode.cs
-|   +-- SyntaxChecker.cs
-|   +-- TuringMachine.cs
-|   +-- TuringMachineDefinition.cs
-|   +-- TuringMachineDefinitionLoader.cs
-|   +-- TuringMachineGraphExporter.cs
-|   +-- TuringMachineProgram.cs
-|   +-- TuringMachineProgramSerializer.cs
-|   +-- TuringSimulator.cs
-|   +-- Properties/
-|
-+-- UTMS.WinForms/             # Windows Forms user interface
-|   +-- Assets/
-|   |   +-- machine_stop.wav
-|   |   +-- tape_tick.wav
-|   +-- MainForm.cs
-|   +-- MainForm.Designer.cs
-|   +-- PromptDialog.cs
-|   +-- PromptDialog.Designer.cs
-|   +-- SimulationVisualState.cs
-|   +-- SoundEffectPlayer.cs
-|   +-- TapeRenderer.cs
-|   +-- TransitionEditorForm.cs
-|   +-- TransitionEditorForm.Designer.cs
-|   +-- Program.cs
-|   +-- Properties/
-|
-+-- UTMS.Tests/                # xUnit tests for non-UI logic
-|   +-- BinaryCodeTest.cs
-|   +-- TapeTest.cs
-|   +-- TuringMachineDefinitionLoaderTest.cs
-|   +-- TuringMachineGraphExporterTest.cs
-|   +-- TuringMachineProgramSerializerTest.cs
-|   +-- TuringMachineProgramTest.cs
-|   +-- TuringMachineTaskTest.cs
-|   +-- TuringSimulatorTest.cs
-|
-+-- UTMS.sln
-+-- README.md
+├── demos/                     # Example .tm and .btm machine definitions
+├── UTMS.Core/                 # Simulation core and file formats
+│   ├── BinaryCode.cs
+│   ├── SyntaxChecker.cs
+│   ├── TuringMachine.cs
+│   ├── TuringMachineDefinition.cs
+│   ├── TuringMachineDefinitionLoader.cs
+│   ├── TuringMachineGraphExporter.cs
+│   ├── TuringMachineProgram.cs
+│   ├── TuringMachineProgramSerializer.cs
+│   ├── TuringSimulator.cs
+│   └── Properties/
+├── UTMS.WinForms/             # Windows Forms user interface
+│   ├── Assets/
+│   │   ├── machine_stop.wav
+│   │   ├── tape_tick.wav
+│   │   └── utms_icon.png
+│   ├── MainForm.cs
+│   ├── MainForm.Designer.cs
+│   ├── MainForm.ico
+│   ├── PromptDialog.cs
+│   ├── PromptDialog.Designer.cs
+│   ├── SimulationVisualState.cs
+│   ├── SoundEffectPlayer.cs
+│   ├── TapeRenderer.cs
+│   ├── TransitionEditorForm.cs
+│   ├── TransitionEditorForm.Designer.cs
+│   ├── Program.cs
+│   └── Properties/
+├── UTMS.Tests/                # xUnit tests for non-UI logic
+│   ├── BinaryCodeTest.cs
+│   ├── TapeTest.cs
+│   ├── TuringMachineDefinitionLoaderTest.cs
+│   ├── TuringMachineGraphExporterTest.cs
+│   ├── TuringMachineProgramSerializerTest.cs
+│   ├── TuringMachineProgramTest.cs
+│   ├── TuringMachineTaskTest.cs
+│   └── TuringSimulatorTest.cs
+├── UTMS.sln
+└── README.md
 ```
 
 ## 🔧 Requirements
